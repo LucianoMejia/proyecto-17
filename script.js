@@ -225,6 +225,9 @@ function createHeartExplosion() {
             animation: explodeHeart 2s ease-out forwards;
             --angle-x: ${Math.cos(angle) * velocity}px;
             --angle-y: ${Math.sin(angle) * velocity}px;
+            padding: 15px;
+            display: inline-block;
+            line-height: 1;
         `;
         
         explosionContainer.appendChild(heart);

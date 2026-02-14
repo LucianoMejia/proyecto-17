@@ -114,18 +114,18 @@ body::after {
 /* Enhanced shine effect with multiple layers */
 .shine-effect {
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
     background: linear-gradient(
         110deg,
         transparent 0%,
-        transparent 40%,
-        rgba(255, 255, 255, 0.03) 45%,
+        transparent 45%,
+        rgba(255, 255, 255, 0.03) 48%,
         rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.03) 55%,
-        transparent 60%,
+        rgba(255, 255, 255, 0.03) 52%,
+        transparent 55%,
         transparent 100%
     );
     animation: shine 12s ease-in-out infinite;
@@ -287,13 +287,15 @@ main {
 .countdown-container::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    top: -25%;
+    left: -150%;
+    width: 150%;
+    height: 150%;
     background: linear-gradient(90deg, 
         transparent, 
-        rgba(255, 255, 255, 0.06), 
+        transparent 40%,
+        rgba(255, 255, 255, 0.06) 50%, 
+        transparent 60%,
         transparent);
     animation: sweep 6s ease-in-out infinite;
 }
@@ -309,7 +311,7 @@ main {
 
 @keyframes sweep {
     0%, 100% {
-        left: -100%;
+        left: -150%;
     }
     50% {
         left: 100%;
@@ -1035,6 +1037,9 @@ footer::before {
     filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.6));
     will-change: transform, opacity;
     transform: translateZ(0); /* Aceleración por hardware */
+    padding: 15px; /* Padding para que no se vea el rectángulo al rotar */
+    display: inline-block;
+    line-height: 1;
 }
 
 @keyframes floatUp {
