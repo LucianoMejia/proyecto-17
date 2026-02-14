@@ -1,5 +1,5 @@
 // Fecha objetivo: 14 de febrero de 2026
-const targetDate = new Date('February 13, 2026 00:00:00').getTime();
+const targetDate = new Date('February 14, 2026 00:00:00').getTime();
 
 // Detección mejorada de dispositivo móvil
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
