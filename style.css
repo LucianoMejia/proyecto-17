@@ -587,6 +587,8 @@ footer::before {
     .countdown-container {
         padding: 2.5rem 1.5rem;
         border-radius: 35px;
+        width: 92%;
+        max-width: 500px;
         backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
         -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
@@ -617,6 +619,8 @@ footer::before {
     .countdown-container {
         padding: 2rem 1rem;
         border-radius: 25px;
+        width: 94%;
+        max-width: 450px;
     }
     
     .countdown {
@@ -656,6 +660,8 @@ footer::before {
 @media (max-width: 360px) {
     .countdown-container {
         padding: 1.5rem 0.8rem;
+        width: 96%;
+        max-width: 360px;
     }
     
     .time-box {
@@ -900,7 +906,7 @@ img, video {
     border-radius: clamp(25px, 5vw, 40px);
     padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.2rem, 3.5vw, 2rem);
     max-width: 800px;
-    width: clamp(280px, 92%, 800px);
+    width: clamp(280px, 90%, 800px);
     box-shadow: 
         0 20px 60px rgba(255, 23, 68, 0.3),
         0 0 0 1px rgba(255, 107, 157, 0.2) inset,
@@ -1182,22 +1188,32 @@ img, video {
     }
     
     .letter-card {
-        width: 94%;
+        width: clamp(280px, 92%, 750px);
         backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
         -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+    }
+    
+    .countdown-container {
+        width: 90%;
+        max-width: 600px;
     }
 }
 
 /* Tablets en modo portrait */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
     .letter-card {
-        width: 90%;
+        width: clamp(280px, 85%, 700px);
         max-width: 700px;
     }
     
     .letter-text {
         font-size: clamp(0.95rem, 2.2vw, 1.1rem);
         line-height: 1.75;
+    }
+    
+    .countdown-container {
+        width: 85%;
+        max-width: 550px;
     }
 }
 
@@ -1208,7 +1224,7 @@ img, video {
     
     /* Optimizar backdrop-filter en móvil */
     .letter-card {
-        width: 95%;
+        width: clamp(280px, 94%, 650px);
         backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
         -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
@@ -1220,6 +1236,8 @@ img, video {
     
     /* Optimizar countdown en móvil */
     .countdown-container {
+        width: 92%;
+        max-width: 500px;
         backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
         -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
@@ -1270,7 +1288,7 @@ img, video {
     }
     
     .letter-card {
-        width: 96%;
+        width: clamp(280px, 96%, 480px);
         border-width: 1.5px;
     }
     
@@ -1315,6 +1333,11 @@ img, video {
         font-size: clamp(0.9rem, 4vw, 1.1rem);
     }
     
+    .countdown-container {
+        width: 94%;
+        max-width: 450px;
+    }
+    
     .name-highlight {
         font-size: 1.15em;
         display: inline-block;
@@ -1329,8 +1352,7 @@ img, video {
 @media (max-width: 360px) {
     .letter-card {
         padding: 1rem 0.7rem;
-        width: 98%;
-        max-height: 68vh;
+        width: clamp(280px, 98%, 360px);
     }
     
     .letter-header h2 {
@@ -1360,6 +1382,11 @@ img, video {
     .date-badge {
         padding: 0.4rem 1rem;
         font-size: clamp(0.78rem, 3.2vw, 0.88rem);
+    }
+    
+    .countdown-container {
+        width: 96%;
+        max-width: 360px;
     }
 }
 
