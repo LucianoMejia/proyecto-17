@@ -9,7 +9,6 @@ html {
     overflow-x: hidden;
     width: 100%;
     height: 100%;
-    position: fixed;
 }
 
 :root {
@@ -23,8 +22,8 @@ html {
     --accent: #505053;
     --glass-bg: rgba(28, 28, 30, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --blur-desktop: 80px;
-    --blur-mobile: 30px;
+    --blur-desktop: 60px;
+    --blur-mobile: 20px;
 }
 
 body {
@@ -37,11 +36,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
     width: 100%;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
 /* Animated gradient background */
@@ -53,11 +53,12 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(80, 80, 83, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(120, 120, 125, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 40% 20%, rgba(60, 60, 65, 0.12) 0%, transparent 45%);
+        radial-gradient(circle at 20% 50%, rgba(120, 40, 60, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(150, 50, 80, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 40% 20%, rgba(100, 30, 50, 0.15) 0%, transparent 45%);
     animation: moveGradient 15s ease-in-out infinite;
     z-index: 0;
+    will-change: transform, opacity;
 }
 
 body::after {
@@ -68,14 +69,15 @@ body::after {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, 
-        transparent 0%, 
-        rgba(30, 30, 35, 0.3) 25%, 
+        rgba(255, 23, 68, 0.05) 0%, 
+        rgba(194, 24, 91, 0.08) 25%,
         transparent 50%, 
-        rgba(40, 40, 45, 0.2) 75%, 
-        transparent 100%);
+        rgba(255, 107, 157, 0.06) 75%, 
+        rgba(255, 23, 68, 0.05) 100%);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
     z-index: 0;
+    will-change: background-position;
 }
 
 @keyframes moveGradient {
@@ -112,7 +114,7 @@ body::after {
     align-items: center;
     justify-content: center;
     min-height: auto;
-    overflow: hidden;
+    overflow: visible;
     max-height: 100vh;
     box-sizing: border-box;
 }
@@ -137,6 +139,7 @@ body::after {
     animation: shine 12s ease-in-out infinite;
     pointer-events: none;
     z-index: 100;
+    will-change: transform;
 }
 
 @keyframes shine {
@@ -247,68 +250,36 @@ main {
 
 /* Glassmorphism countdown container */
 .countdown-container {
-    background: rgba(28, 28, 30, 0.25);
-    backdrop-filter: blur(var(--blur-desktop)) saturate(200%);
-    -webkit-backdrop-filter: blur(var(--blur-desktop)) saturate(200%);
-    border-radius: 50px;
-    padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 5vw, 4rem);
-    box-shadow: 
-        0 8px 32px 0 rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-        0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+    box-shadow: none;
+    border: none;
     position: relative;
-    overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: visible;
+    transition: none;
     transform: translateZ(0);
     width: 100%;
-    max-width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .countdown-container:hover {
-    background: rgba(28, 28, 30, 0.35);
-    box-shadow: 
-        0 12px 48px 0 rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-        0 1px 0 0 rgba(255, 255, 255, 0.12) inset;
-    transform: translateY(-2px);
+    background: transparent;
+    box-shadow: none;
+    transform: none;
 }
 
 /* Animated gradient overlay */
 .countdown-container::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.02) 40%,
-        rgba(255, 255, 255, 0.06) 50%,
-        rgba(255, 255, 255, 0.02) 60%,
-        transparent 70%
-    );
-    animation: rotateGradient 10s linear infinite;
-    pointer-events: none;
+    display: none;
 }
 
 /* Light sweep effect - más profesional */
 .countdown-container::after {
-    content: '';
-    position: absolute;
-    top: -25%;
-    left: -150%;
-    width: 150%;
-    height: 150%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        transparent 40%,
-        rgba(255, 255, 255, 0.06) 50%, 
-        transparent 60%,
-        transparent);
-    animation: sweep 6s ease-in-out infinite;
+    display: none;
 }
 
 @keyframes rotateGradient {
@@ -333,8 +304,8 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: clamp(1rem, 4vw, 3rem);
-    flex-wrap: wrap;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    flex-wrap: nowrap;
     position: relative;
     z-index: 1;
     width: 100%;
@@ -347,14 +318,18 @@ main {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-radius: 0;
-    padding: clamp(0.8rem, 3vw, 2rem) clamp(0.3rem, 2vw, 1rem);
-    min-width: clamp(85px, 14vw, 140px);
+    padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 3.5vw, 2rem);
+    min-width: clamp(120px, 18vw, 200px);
     box-shadow: none;
     border: none;
     position: relative;
     overflow: visible;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .time-box::before,
@@ -374,7 +349,7 @@ main {
 }
 
 .time-value {
-    font-size: clamp(3rem, 12vw, 8rem);
+    font-size: clamp(3rem, 10vw, 6.5rem);
     font-weight: 700;
     background: linear-gradient(180deg, 
         #ffffff 0%, 
@@ -391,6 +366,7 @@ main {
     filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
     animation: professionalPulse 2s ease-in-out infinite;
     transform: translateZ(0);
+    width: 100%;
 }
 
 .time-value::before {
@@ -561,23 +537,73 @@ footer::before {
     }
 }
 
+/* ========== RESPONSIVE DESIGN - TABLET ========== */
+
 @media (max-width: 992px) {
+    /* Countdown */
     .countdown {
         gap: clamp(1rem, 3vw, 2rem);
     }
     
     .countdown-container {
         padding: 3.5rem 2rem;
+        width: 90%;
+        max-width: 600px;
     }
 }
 
+/* ========== RESPONSIVE DESIGN - MOBILE ========== */
+
 @media (max-width: 768px) {
+    /* Variables */
     :root {
         --blur-desktop: var(--blur-mobile);
     }
     
+    /* Optimización de fondos */
+    body::before {
+        animation: none;
+        opacity: 0.6;
+    }
+    
+    body::after {
+        animation: gradientShift 30s ease infinite;
+    }
+    
+    /* Layout principal */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        position: relative;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Efectos deshabilitados */
+    .shine-effect {
+        display: none;
+    }
+    
+    .logo::after {
+        display: none;
+    }
+    
+    .cursor-particle,
+    .magic-particle {
+        display: none;
+    }
+    
+    /* Countdown (cuenta regresiva) */
     .countdown {
         gap: 1rem;
+        flex-wrap: wrap;
     }
     
     .separator {
@@ -589,8 +615,22 @@ footer::before {
         border-radius: 35px;
         width: 92%;
         max-width: 500px;
-        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+        backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
+    }
+    
+    .countdown-container::before,
+    .countdown-container::after {
+        animation: none !important;
+    }
+    
+    .time-box {
+        padding: 0.8rem 0.5rem;
+        min-width: clamp(80px, 20vw, 120px);
+    }
+    
+    .time-value::before {
+        filter: blur(10px);
     }
     
     header {
@@ -601,26 +641,114 @@ footer::before {
         width: 90%;
     }
     
-    .time-box {
-        padding: 0.8rem 0.5rem;
-        min-width: clamp(80px, 20vw, 120px);
-    }
-    
-    .time-value::before {
-        filter: blur(15px);
-    }
-    
     .logo {
         font-size: clamp(2rem, 10vw, 3.5rem);
+        animation: fadeInDown 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Love Letter (carta de amor) */
+    .love-letter-container {
+        padding: 0.8rem 0;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+    
+    .letter-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.8rem 1rem;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
+        overflow: visible;
+        border-radius: clamp(15px, 3vw, 25px);
+        margin: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .letter-header {
+        flex-wrap: wrap;
+    }
+    
+    .letter-text {
+        text-align: center;
+        font-size: clamp(0.95rem, 4vw, 1.1rem);
+        line-height: 1.6;
+        padding: 0;
+    }
+    
+    .letter-content,
+    .letter-header,
+    .love-footer,
+    .signature {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .signature {
+        font-size: clamp(0.9rem, 3.3vw, 1.2rem) !important;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .love-title {
+        font-size: clamp(2.5rem, 12vw, 4.5rem);
+        margin-bottom: clamp(1rem, 4vw, 1.8rem);
+    }
+    
+    .love-title::before,
+    .love-title::after {
+        font-size: 0.7em;
+        left: -0.8em;
+        right: -0.8em;
+    }
+    
+    .date-badge {
+        padding: 0.6rem 1.5rem;
+        font-size: clamp(0.85rem, 3vw, 1rem);
+    }
+    
+    .floating-heart {
+        filter: none;
+    }
+    
+    #interaction-counter {
+        top: 10px !important;
+        right: 10px !important;
+        font-size: 12px !important;
+        padding: 8px 15px !important;
+    }
+    
+    @keyframes rippleExpand {
+        0% {
+            width: 0;
+            height: 0;
+            opacity: 1;
+        }
+        100% {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
     }
 }
 
+/* ========== RESPONSIVE DESIGN - SMALL MOBILE ========== */
+
 @media (max-width: 480px) {
+    /* Variables */
+    :root {
+        --blur-mobile: 15px;
+    }
+    
+    /* Countdown */
     .countdown-container {
         padding: 2rem 1rem;
         border-radius: 25px;
         width: 94%;
         max-width: 450px;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(150%);
     }
     
     .countdown {
@@ -630,6 +758,7 @@ footer::before {
     .time-box {
         padding: 0.6rem 0.3rem;
         min-width: clamp(70px, 22vw, 100px);
+        min-height: 90px;
     }
     
     .time-value {
@@ -637,7 +766,7 @@ footer::before {
     }
     
     .time-value::before {
-        filter: blur(10px);
+        filter: blur(8px);
     }
     
     .time-label {
@@ -655,26 +784,171 @@ footer::before {
     .credits {
         font-size: clamp(0.8rem, 3vw, 0.95rem);
     }
+    
+    /* Love Letter */
+    .love-letter-container {
+        padding: 0.6rem 0;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+    
+    .letter-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem 0.9rem;
+        border-width: 1.5px;
+        overflow: visible;
+        border-radius: clamp(12px, 2.5vw, 20px);
+        margin: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .letter-card::after {
+        border-radius: clamp(20px, 4vw, 25px);
+    }
+    
+    .letter-content {
+        padding: 0;
+    }
+    
+    .letter-text {
+        text-align: center;
+        padding: 0;
+        font-size: clamp(0.9rem, 4.2vw, 1.05rem);
+        line-height: 1.6;
+    }
+    
+    .signature {
+        font-size: clamp(1rem, 4.5vw, 1.2rem) !important;
+        margin-top: clamp(1rem, 2vh, 1.3rem);
+        text-align: center;
+        margin-bottom: 0.5rem;
+        padding: 0;
+    }
+    
+    .letter-footer {
+        margin-top: clamp(1rem, 2vh, 1.5rem);
+    }
+    
+    .date-badge {
+        padding: 0.6rem 1.3rem;
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
+        border-radius: 40px;
+    }
+    
+    .love-title {
+        font-size: clamp(2rem, 12vw, 3.5rem);
+        margin-bottom: clamp(0.8rem, 4vw, 1.5rem);
+        line-height: 1.2;
+    }
+    
+    .love-title::before,
+    .love-title::after {
+        display: none;
+    }
+    
+    .love-footer .credits {
+        font-size: clamp(0.9rem, 4vw, 1.1rem);
+    }
+    
+    .name-highlight {
+        font-size: 1.15em;
+        display: inline-block;
+    }
+    
+    .credits-small {
+        font-size: clamp(0.75rem, 3vw, 0.9rem);
+        margin-top: 0.3rem;
+    }
 }
 
+/* ========== RESPONSIVE DESIGN - EXTRA SMALL MOBILE ========== */
+
 @media (max-width: 360px) {
+    /* Variables */
+    :root {
+        --blur-mobile: 12px;
+    }
+    
+    /* Countdown */
     .countdown-container {
         padding: 1.5rem 0.8rem;
         width: 96%;
         max-width: 360px;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(140%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(140%);
     }
     
     .time-box {
         min-width: clamp(60px, 23vw, 85px);
         padding: 0.5rem 0.25rem;
+        min-height: 80px;
     }
     
     .time-value {
         font-size: clamp(2.5rem, 10vw, 3.5rem);
     }
     
+    .time-value::before {
+        filter: blur(6px);
+    }
+    
     .time-label {
         font-size: clamp(0.6rem, 2vw, 0.8rem);
+    }
+    
+    /* Love Letter */
+    .love-letter-container {
+        padding: 0.5rem 0;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+    
+    .letter-card {
+        padding: 1.3rem 0.8rem;
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+        border-radius: clamp(10px, 2vw, 18px);
+        margin: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .letter-content {
+        padding: 0;
+    }
+    
+    .letter-text {
+        font-size: clamp(0.85rem, 4.5vw, 1rem);
+        line-height: 1.55;
+        margin-bottom: 0.7rem;
+        padding: 0;
+    }
+    
+    .letter-header h2 {
+        font-size: clamp(1.1rem, 6.5vw, 1.5rem);
+    }
+    
+    .heart-icon {
+        font-size: clamp(1.2rem, 5.5vw, 1.7rem);
+    }
+    
+    .signature {
+        font-size: clamp(0.9rem, 4.5vw, 1.05rem) !important;
+        margin-top: 0.8rem;
+        padding: 0;
+    }
+    
+    .love-title {
+        font-size: clamp(1.8rem, 12vw, 3rem);
+        margin-bottom: 0.8rem;
+    }
+    
+    .date-badge {
+        padding: 0.4rem 1rem;
+        font-size: clamp(0.78rem, 3.2vw, 0.88rem);
     }
 }
 
@@ -684,15 +958,19 @@ footer::before {
         min-height: 100vh;
         height: auto;
         position: relative;
+        overflow-y: auto;
     }
     
     .container {
         max-height: none;
-        overflow: hidden;
+        overflow: visible;
+        padding: 1rem;
     }
     
     .countdown-container {
-        padding: 2rem 2rem;
+        padding: 1.5rem 2rem;
+        backdrop-filter: blur(20px) saturate(150%);
+        -webkit-backdrop-filter: blur(20px) saturate(150%);
     }
     
     header {
@@ -784,20 +1062,7 @@ img, video {
     color: var(--text-primary);
 }
 
-/* Accesibilidad para reducción de movimiento */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-    
-    .countdown-container::before,
-    .countdown-container::after,
-    .letter-card::before,
+
     .letter-card::after {
         animation: none !important;
     }
@@ -814,7 +1079,8 @@ img, video {
 
 .love-letter-container {
     width: 100%;
-    max-width: 100vw;
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -822,14 +1088,10 @@ img, video {
     animation: fadeInScale 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     z-index: 2;
-    padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 3vw, 1.5rem);
-    padding-left: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-left));
-    padding-right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
-    padding-top: max(clamp(1rem, 3vh, 2rem), env(safe-area-inset-top));
-    padding-bottom: max(clamp(1rem, 3vh, 2rem), env(safe-area-inset-bottom));
+    padding: clamp(1rem, 3vh, 1.5rem) clamp(0.8rem, 2.5vw, 1.2rem);
     box-sizing: border-box;
+    overflow-x: hidden;
     overflow-y: auto;
-    min-height: 100vh;
     max-height: 100vh;
 }
 
@@ -900,57 +1162,60 @@ img, video {
 }
 
 .letter-card {
-    background: rgba(40, 20, 30, 0.4);
-    backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
-    border-radius: clamp(25px, 5vw, 40px);
-    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.2rem, 3.5vw, 2rem);
-    max-width: 800px;
-    width: clamp(280px, 90%, 800px);
+    background: rgba(40, 20, 30, 0.5);
+    backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+    border-radius: clamp(20px, 4vw, 35px);
+    padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem);
+    max-width: 750px;
+    width: clamp(280px, 92%, 750px);
     box-shadow: 
-        0 20px 60px rgba(255, 23, 68, 0.3),
-        0 0 0 1px rgba(255, 107, 157, 0.2) inset,
-        0 0 100px rgba(255, 23, 68, 0.1);
-    border: 2px solid rgba(255, 107, 157, 0.15);
+        0 20px 60px rgba(255, 23, 68, 0.25),
+        0 0 0 1px rgba(255, 107, 157, 0.15) inset,
+        0 0 80px rgba(255, 23, 68, 0.08);
+    border: 1px solid rgba(255, 107, 157, 0.12);
     position: relative;
-    animation: cardPulse 4s ease-in-out infinite;
+    animation: cardPulse 6s ease-in-out infinite;
     box-sizing: border-box;
     margin: 0 auto;
     transform: translateZ(0);
+    overflow: visible;
 }
 
 @keyframes cardPulse {
     0%, 100% {
         box-shadow: 
-            0 20px 60px rgba(255, 23, 68, 0.3),
-            0 0 0 1px rgba(255, 107, 157, 0.2) inset,
-            0 0 100px rgba(255, 23, 68, 0.1);
+            0 20px 60px rgba(255, 23, 68, 0.25),
+            0 0 0 1px rgba(255, 107, 157, 0.15) inset,
+            0 0 80px rgba(255, 23, 68, 0.08);
         transform: scale(1);
     }
     50% {
         box-shadow: 
-            0 25px 70px rgba(255, 23, 68, 0.4),
-            0 0 0 1px rgba(255, 107, 157, 0.3) inset,
-            0 0 120px rgba(255, 23, 68, 0.2);
-        transform: scale(1.002);
+            0 25px 70px rgba(255, 23, 68, 0.3),
+            0 0 0 1px rgba(255, 107, 157, 0.2) inset,
+            0 0 100px rgba(255, 23, 68, 0.12);
+        transform: scale(1.005);
     }
 }
 
 .letter-card::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 23, 68, 0.05) 0%,
-        rgba(194, 24, 91, 0.08) 50%,
-        rgba(255, 107, 157, 0.05) 100%
+        rgba(255, 23, 68, 0.01) 0%,
+        rgba(194, 24, 91, 0.015) 50%,
+        rgba(255, 107, 157, 0.01) 100%
     );
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
+    border-radius: inherit;
+    opacity: 0.8;
 }
 
 /* Estilos optimizados para la carta */
@@ -973,7 +1238,11 @@ img, video {
     gap: clamp(0.5rem, 2vw, 1rem);
     position: relative;
     z-index: 1;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0;
 }
 
 .heart-icon {
@@ -1009,26 +1278,38 @@ img, video {
     line-height: 1.3;
     margin: 0;
     padding: 0;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-align: center;
 }
 
 .letter-content {
     position: relative;
     z-index: 1;
     margin: clamp(0.5rem, 2vh, 1rem) 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
 }
 
 .letter-text {
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-    line-height: 1.7;
+    font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+    line-height: 1.65;
     color: var(--text-primary);
-    margin-bottom: clamp(0.7rem, 2vh, 1rem);
+    margin-bottom: clamp(0.8rem, 2.5vh, 1.2rem);
     text-align: center;
     opacity: 0.95;
     animation: fadeInText 2s ease-out backwards;
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
 }
 
 .letter-text:nth-child(2) {
@@ -1074,11 +1355,15 @@ img, video {
 .signature {
     font-style: italic;
     font-weight: 600;
-    margin-top: clamp(0.6rem, 2vh, 1rem);
+    margin-top: clamp(0.8rem, 2.5vh, 1.2rem);
     margin-bottom: 0;
     color: #ff6b9d !important;
-    font-size: clamp(0.85rem, 2.2vw, 1.1rem) !important;
+    font-size: clamp(0.9rem, 3.8vw, 1.15rem) !important;
     line-height: 1.4;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .letter-footer {
@@ -1103,17 +1388,24 @@ img, video {
 
 .love-footer {
     text-align: center;
-    margin-top: clamp(0.8rem, 2vh, 1.5rem);
+    margin-top: clamp(1rem, 3vh, 1.8rem);
     position: relative;
     z-index: 1;
-    padding: 0 1rem;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .love-footer .credits {
-    font-size: clamp(0.8rem, 2vw, 1.1rem);
+    font-size: clamp(1rem, 4vw, 1.2rem);
     color: var(--text-primary);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
     line-height: 1.4;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .name-highlight {
@@ -1182,22 +1474,7 @@ img, video {
 }
 
 /* Responsive para carta de amor */
-@media (max-width: 992px) {
-    .love-letter-container {
-        padding: clamp(1rem, 3vh, 1.5rem) clamp(0.8rem, 2.5vw, 1.2rem);
-    }
-    
-    .letter-card {
-        width: clamp(280px, 92%, 750px);
-        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-    }
-    
-    .countdown-container {
-        width: 90%;
-        max-width: 600px;
-    }
-}
+
 
 /* Tablets en modo portrait */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
@@ -1217,172 +1494,11 @@ img, video {
     }
 }
 
-@media (max-width: 768px) {
-    .love-letter-container {
-        padding: clamp(0.8rem, 2.5vh, 1.2rem) clamp(0.6rem, 2vw, 1rem);
-    }
-    
-    /* Optimizar backdrop-filter en móvil */
-    .letter-card {
-        width: clamp(280px, 94%, 650px);
-        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-    }
-    
-    /* Optimizar efectos en móvil */
-    .floating-heart {
-        filter: none;
-    }
-    
-    /* Optimizar countdown en móvil */
-    .countdown-container {
-        width: 92%;
-        max-width: 500px;
-        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-    }
-    
-    .letter-header {
-        flex-wrap: nowrap;
-    }
-    
-    .letter-text {
-        text-align: center;
-    }
-    
-    .signature {
-        font-size: clamp(0.9rem, 3.3vw, 1.2rem) !important;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .love-title {
-        font-size: clamp(2.5rem, 12vw, 4.5rem);
-        margin-bottom: clamp(1rem, 4vw, 1.8rem);
-    }
-    
-    .love-title::before,
-    .love-title::after {
-        font-size: 0.7em;
-        left: -0.8em;
-        right: -0.8em;
-    }
-    
-    .date-badge {
-        padding: 0.6rem 1.5rem;
-        font-size: clamp(0.85rem, 3vw, 1rem);
-    }
-    
-    .love-footer {
-        margin-top: clamp(1.5rem, 5vw, 2.5rem);
-    }
-    
-    .love-footer .credits {
-        font-size: clamp(0.95rem, 3.5vw, 1.2rem);
-    }
-}
 
-@media (max-width: 480px) {
-    .love-letter-container {
-        padding: clamp(0.6rem, 2vh, 1rem) clamp(0.5rem, 1.5vw, 0.8rem);
-    }
-    
-    .letter-card {
-        width: clamp(280px, 96%, 480px);
-        border-width: 1.5px;
-    }
-    
-    .letter-card::after {
-        border-radius: clamp(20px, 4vw, 25px);
-    }
-    
-    .letter-text {
-        text-align: center;
-        padding: 0;
-    }
-    
-    .signature {
-        font-size: clamp(0.95rem, 4vw, 1.15rem) !important;
-        margin-top: clamp(1rem, 2vh, 1.3rem);
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-    
-    .letter-footer {
-        margin-top: clamp(1rem, 2vh, 1.5rem);
-    }
-    
-    .date-badge {
-        padding: 0.6rem 1.3rem;
-        font-size: clamp(0.85rem, 3.5vw, 1rem);
-        border-radius: 40px;
-    }
-    
-    .love-title {
-        font-size: clamp(2rem, 12vw, 3.5rem);
-        margin-bottom: clamp(0.8rem, 4vw, 1.5rem);
-        line-height: 1.2;
-    }
-    
-    .love-title::before,
-    .love-title::after {
-        display: none;
-    }
-    
-    .love-footer .credits {
-        font-size: clamp(0.9rem, 4vw, 1.1rem);
-    }
-    
-    .countdown-container {
-        width: 94%;
-        max-width: 450px;
-    }
-    
-    .name-highlight {
-        font-size: 1.15em;
-        display: inline-block;
-    }
-    
-    .credits-small {
-        font-size: clamp(0.75rem, 3vw, 0.9rem);
-        margin-top: 0.3rem;
-    }
-}
 
-@media (max-width: 360px) {
-    .letter-card {
-        padding: 1rem 0.7rem;
-        width: clamp(280px, 98%, 360px);
-    }
-    
-    .letter-header h2 {
-        font-size: clamp(1.1rem, 6.5vw, 1.5rem);
-    }
-    
-    .heart-icon {
-        font-size: clamp(1.2rem, 5.5vw, 1.7rem);
-    }
-    
-    .letter-text {
-        font-size: clamp(0.82rem, 3.6vw, 0.95rem);
-        line-height: 1.55;
-        margin-bottom: 0.7rem;
-    }
-    
-    .signature {
-        font-size: clamp(0.85rem, 3.6vw, 1rem) !important;
-        margin-top: 0.8rem;
-    }
-    
-    .love-title {
-        font-size: clamp(1.8rem, 12vw, 3rem);
-        margin-bottom: 0.8rem;
-    }
-    
-    .date-badge {
-        padding: 0.4rem 1rem;
-        font-size: clamp(0.78rem, 3.2vw, 0.88rem);
-    }
+
+
+
     
     .countdown-container {
         width: 96%;
@@ -1488,26 +1604,25 @@ img, video {
     }
 }
 
-/* Efecto de brillo en bordes de la carta */
+/* Efecto de brillo sutil en bordes de la carta */
 .letter-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 40px;
-    padding: 2px;
+    border-radius: inherit;
+    padding: 1px;
     background: linear-gradient(135deg, 
-        rgba(255, 107, 157, 0.3), 
+        rgba(255, 107, 157, 0.15), 
         transparent,
-        rgba(255, 23, 68, 0.3),
-        transparent,
-        rgba(194, 24, 91, 0.3));
-    background-size: 300% 300%;
+        rgba(255, 23, 68, 0.15));
+    background-size: 200% 200%;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
-    animation: animatedBorder 4s ease infinite;
+    animation: animatedBorder 6s ease infinite;
     pointer-events: none;
+    opacity: 0.7;
 }
 
 @keyframes animatedBorder {
@@ -1647,20 +1762,7 @@ img, video {
     backface-visibility: hidden;
 }
 
-@keyframes rippleExpand {
-    0% {
-        width: 0;
-        height: 0;
-        opacity: 1;
-    }
-    100% {
-        width: 300px;
-        height: 300px;
-        opacity: 0;
-    }
-}
 
-/* Mega ripple para doble clic */
 @keyframes megaRipple {
     0% {
         width: 0;
@@ -2007,37 +2109,7 @@ img, video {
 }
 
 /* Efecto de pulso más suave y profesional */
-@keyframes professionalPulse {
-    0%, 100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
-    }
-    50% {
-        transform: scale(1.02);
-        filter: drop-shadow(0 0 45px rgba(255, 255, 255, 0.7));
-    }
-}
 
-/* Animación de número cambiando mejorada */
-@keyframes numberChange {
-    0% {
-        transform: scale(1) translateY(0) rotateX(0deg);
-        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)) blur(0);
-        opacity: 1;
-    }
-    30% {
-        transform: scale(0.85) translateY(-15px) rotateX(-90deg);
-        filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.9)) blur(2px);
-        opacity: 0.7;
-    }
-    60% {
-        transform: scale(1.15) translateY(5px) rotateX(90deg);
-        filter: drop-shadow(0 0 80px rgba(255, 255, 255, 1)) blur(0);
-        opacity: 0.9;
-    }
-    100% {
-        transform: scale(1) translateY(0) rotateX(0deg);
-        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)) blur(0);
         opacity: 1;
     }
 }
@@ -2049,58 +2121,33 @@ img, video {
 }
 
 /* Scroll personalizado más bonito */
+/* Scroll minimalista */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.3),
-        rgba(255, 255, 255, 0.1));
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
     transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.5),
-        rgba(255, 255, 255, 0.2));
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Optimizar para dispositivos de bajo rendimiento */
-@media (max-width: 768px) {
-    .cursor-particle,
-    .magic-particle {
-        display: none;
-    }
-    
-    #interaction-counter {
-        top: 10px !important;
-        right: 10px !important;
-        font-size: 12px !important;
-        padding: 8px 15px !important;
-    }
-    
-    @keyframes rippleExpand {
-        0% {
-            width: 0;
-            height: 0;
-            opacity: 1;
-        }
-        100% {
-            width: 200px;
-            height: 200px;
-            opacity: 0;
-        }
-    }
-}
+
 
 /* Desactivar algunas animaciones en modo reducido de movimiento */
 @media (prefers-reduced-motion: reduce) {
@@ -2112,3 +2159,41 @@ img, video {
         display: none !important;
     }
 }
+
+/* Optimizaciones adicionales para táctiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Estos son dispositivos táctiles - optimizar para touch */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .time-box,
+    .logo,
+    .letter-text {
+        /* Aumentar área táctil mínima */
+        min-height: 44px;
+    }
+    
+    /* Desactivar efectos hover que no funcionan bien en móvil */
+    .time-box:hover,
+    .logo:hover,
+    .love-title:hover {
+        transform: none;
+        filter: none;
+    }
+}
+
+/* Optimización de rendimiento para GPUs */
+.countdown-container,
+.time-box,
+.time-value,
+.logo,
+.letter-card,
+.floating-heart {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Prevenir scroll horizontal en móviles */
+

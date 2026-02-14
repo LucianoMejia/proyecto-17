@@ -10,6 +10,12 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 // Detección de capacidad de rendimiento
 const isLowPerformance = isMobile || navigator.hardwareConcurrency <= 4;
 
+// Variables para controlar intervalos y mejorar performance
+let activeIntervals = [];
+let animationFrameId = null;
+let particleCount = 0;
+const MAX_PARTICLES = isMobile ? 15 : 30;
+
 // Elementos del DOM
 const daysElement = document.getElementById('days');
 const hoursElement = document.getElementById('hours');
@@ -235,13 +241,13 @@ function createHeartExplosion() {
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓', '💘'];
     // Ajustar cantidad según dispositivo y rendimiento
-    const particleCount = isLowPerformance ? 25 : (isMobile ? 30 : 50);
+    const particleCount = isLowPerformance ? 15 : (isMobile ? 20 : 35);
     
     for (let i = 0; i < particleCount; i++) {
         const heart = document.createElement('div');
         const angle = (Math.PI * 2 * i) / particleCount;
-        const velocity = isMobile ? (150 + Math.random() * 250) : (200 + Math.random() * 400);
-        const size = isMobile ? (15 + Math.random() * 25) : (20 + Math.random() * 40);
+        const velocity = isMobile ? (150 + Math.random() * 200) : (200 + Math.random() * 300);
+        const size = isMobile ? (15 + Math.random() * 20) : (20 + Math.random() * 30);
         
         heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
         heart.style.cssText = `
@@ -257,6 +263,7 @@ function createHeartExplosion() {
             display: inline-block;
             line-height: 1;
             transform: translateZ(0);
+            will-change: transform, opacity;
         `;
         
         explosionContainer.appendChild(heart);
@@ -274,9 +281,12 @@ function createFloatingHearts() {
     document.body.appendChild(heartsContainer);
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞'];
-    const heartInterval = isLowPerformance ? 800 : (isMobile ? 600 : 400);
+    const heartInterval = isLowPerformance ? 1200 : (isMobile ? 900 : 600);
     
-    setInterval(() => {
+    const heartIntervalId = setInterval(() => {
+        // Control de partículas máximas
+        if (particleCount >= MAX_PARTICLES) return;
+        
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
@@ -285,15 +295,21 @@ function createFloatingHearts() {
         heart.style.fontSize = isMobile ? (Math.random() * 20 + 20) + 'px' : (Math.random() * 30 + 25) + 'px';
         heart.style.setProperty('--random-x', (Math.random() * 200 - 100) + 'px');
         heartsContainer.appendChild(heart);
+        particleCount++;
         
         setTimeout(() => {
             heart.remove();
+            particleCount = Math.max(0, particleCount - 1);
         }, 8000);
     }, heartInterval);
     
-    // Partículas adicionales de corazones pequeños (menos en móvil)
+    activeIntervals.push(heartIntervalId);
+    
+    // Partículas adicionales de corazones pequeños (solo desktop con buen rendimiento)
     if (!isMobile && !isLowPerformance) {
-        setInterval(() => {
+        const smallHeartIntervalId = setInterval(() => {
+            if (particleCount >= MAX_PARTICLES) return;
+            
             const smallHeart = document.createElement('div');
             smallHeart.className = 'floating-heart';
             smallHeart.innerHTML = '💕';
@@ -303,35 +319,45 @@ function createFloatingHearts() {
             smallHeart.style.setProperty('--random-x', (Math.random() * 150 - 75) + 'px');
             smallHeart.style.opacity = '0.6';
             heartsContainer.appendChild(smallHeart);
+            particleCount++;
             
             setTimeout(() => {
                 smallHeart.remove();
+                particleCount = Math.max(0, particleCount - 1);
             }, 5000);
-        }, 800);
+        }, 1200);
+        
+        activeIntervals.push(smallHeartIntervalId);
     }
     
-    // Crear partículas brillantes
-    if (!isLowPerformance) {
+    // Crear partículas brillantes (solo en desktop)
+    if (!isLowPerformance && !isMobile) {
         createSparkles();
     }
 }
 
 // Función para crear partículas brillantes
 function createSparkles() {
-    const sparkleInterval = isLowPerformance ? 600 : (isMobile ? 400 : 200);
+    const sparkleInterval = isLowPerformance ? 1000 : (isMobile ? 800 : 400);
     
-    setInterval(() => {
+    const sparkleIntervalId = setInterval(() => {
+        if (particleCount >= MAX_PARTICLES) return;
+        
         const sparkle = document.createElement('div');
         sparkle.className = 'sparkle';
         sparkle.style.left = Math.random() * 100 + 'vw';
         sparkle.style.bottom = '0px';
         sparkle.style.animationDuration = (Math.random() * 2 + 2) + 's';
         document.body.appendChild(sparkle);
+        particleCount++;
         
         setTimeout(() => {
             sparkle.remove();
+            particleCount = Math.max(0, particleCount - 1);
         }, 4000);
     }, sparkleInterval);
+    
+    activeIntervals.push(sparkleIntervalId);
 }
 
 // Actualizar cada segundo
@@ -383,7 +409,7 @@ function initProfessionalEffects() {
             // Movimiento más sutil y profesional
             targetX = (e.clientX / window.innerWidth - 0.5) * 0.5;
             targetY = (e.clientY / window.innerHeight - 0.5) * 0.5;
-        }, 16);
+        }, 32); // Reducido de 16ms a 32ms para mejor performance
         
         document.addEventListener('mousemove', handleParallax);
         
@@ -393,7 +419,7 @@ function initProfessionalEffects() {
             currentY += (targetY - currentY) * 0.05;
             
             const container = document.querySelector('.countdown-container');
-            if (container) {
+            if (container && !document.hidden) {
                 container.style.transform = `
                     perspective(1500px)
                     rotateY(${currentX * 1.5}deg)
@@ -404,14 +430,14 @@ function initProfessionalEffects() {
             
             // Parallax mínimo para el logo
             const logo = document.querySelector('.logo');
-            if (logo) {
+            if (logo && !document.hidden) {
                 logo.style.transform = `
                     translateX(${currentX * 5}px)
                     translateY(${currentY * 5}px)
                 `;
             }
             
-            requestAnimationFrame(animateParallax);
+            animationFrameId = requestAnimationFrame(animateParallax);
         }
         
         animateParallax();
@@ -462,6 +488,12 @@ document.addEventListener('visibilitychange', () => {
                 value.style.animationPlayState = 'paused';
             }
         });
+        
+        // Cancelar requestAnimationFrame
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
     } else {
         // Reanudar animaciones cuando vuelve a estar visible
         timeBoxes.forEach(box => {
@@ -470,6 +502,11 @@ document.addEventListener('visibilitychange', () => {
                 value.style.animationPlayState = 'running';
             }
         });
+        
+        // Reiniciar parallax si estaba activo
+        if (!isMobile && !isLowPerformance && !animationFrameId) {
+            initProfessionalEffects();
+        }
     }
 });
 
@@ -1207,8 +1244,10 @@ const originalShowLoveLetter = showLoveLetter;
 
 // Sistema de partículas mágicas que flotan constantemente
 function createMagicParticles() {
-    setInterval(() => {
-        if (!isLowPerformance && Math.random() > 0.7) {
+    const magicInterval = setInterval(() => {
+        if (particleCount >= MAX_PARTICLES || document.hidden) return;
+        
+        if (!isLowPerformance && Math.random() > 0.8) {
             const x = Math.random() * window.innerWidth;
             const y = window.innerHeight + 20;
             
@@ -1234,13 +1273,19 @@ function createMagicParticles() {
             `;
             
             document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), (duration + delay) * 1000);
+            particleCount++;
+            setTimeout(() => {
+                particle.remove();
+                particleCount = Math.max(0, particleCount - 1);
+            }, (duration + delay) * 1000);
         }
-    }, 300);
+    }, 600);
+    
+    activeIntervals.push(magicInterval);
 }
 
-// Iniciar partículas mágicas
-if (!isLowPerformance) {
+// Iniciar partículas mágicas (solo en desktop con buen rendimiento)
+if (!isLowPerformance && !isMobile) {
     createMagicParticles();
 }
 
@@ -1291,13 +1336,35 @@ document.addEventListener('scroll', () => {
 }, { passive: true, capture: true });
 
 // Limpiar partículas en exceso periódicamente  
-setInterval(() => {
-    const particles = document.querySelectorAll('.cursor-particle, .interactive-heart, .confetti-piece');
-    if (particles.length > maxParticles * 2) {
+const cleanupIntervalId = setInterval(() => {
+    if (document.hidden) return; // No limpiar si la pestaña está oculta
+    
+    const particles = document.querySelectorAll('.cursor-particle, .interactive-heart, .confetti-piece, .magic-particle');
+    const currentMaxParticles = isMobile ? 15 : 30;
+    
+    if (particles.length > currentMaxParticles * 1.5) {
         // Remover las más antiguas
-        for (let i = 0; i < particles.length - maxParticles; i++) {
-            particles[i].remove();
-            currentParticles = Math.max(0, currentParticles - 1);
+        const removeCount = Math.min(particles.length - currentMaxParticles, 10);
+        for (let i = 0; i < removeCount; i++) {
+            if (particles[i]) {
+                particles[i].remove();
+                particleCount = Math.max(0, particleCount - 1);
+            }
         }
     }
-}, 2000);
+}, 3000); // Aumentado de 2000 a 3000 para menos overhead
+
+activeIntervals.push(cleanupIntervalId);
+
+// Limpiar recursos cuando se cierra la página
+window.addEventListener('beforeunload', () => {
+    // Cancelar todos los intervalos activos
+    activeIntervals.forEach(id => clearInterval(id));
+    activeIntervals = [];
+    
+    // Cancelar animationFrame si existe
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+});
