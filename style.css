@@ -550,6 +550,44 @@ footer::before {
         width: 90%;
         max-width: 600px;
     }
+    
+    /* Love Letter - Tablet */
+    .love-letter-container {
+        max-width: 900px;
+        padding: clamp(1.2rem, 3.5vh, 2rem) clamp(1rem, 3vw, 1.5rem);
+    }
+    
+    .letter-card {
+        max-width: 800px;
+        width: clamp(280px, 90%, 800px);
+        padding: clamp(2.2rem, 4vw, 3.5rem) clamp(1.8rem, 3.5vw, 3rem);
+        border-radius: clamp(22px, 3vw, 35px);
+    }
+    
+    .love-title {
+        font-size: clamp(2.2rem, 7vw, 4.2rem);
+        margin-bottom: clamp(1.2rem, 2.8vh, 2rem);
+    }
+    
+    .letter-text {
+        font-size: clamp(0.95rem, 3vw, 1.15rem);
+        line-height: 1.7;
+        margin-bottom: clamp(0.9rem, 2.5vh, 1.3rem);
+    }
+    
+    .letter-header h2 {
+        font-size: clamp(1.5rem, 4.5vw, 2.6rem);
+    }
+    
+    .signature {
+        font-size: clamp(1rem, 3.2vw, 1.25rem) !important;
+        margin-top: clamp(1rem, 2.8vh, 1.5rem);
+    }
+    
+    .date-badge {
+        padding: clamp(0.65rem, 2vw, 0.9rem) clamp(1.3rem, 4vw, 2.2rem);
+        font-size: clamp(0.9rem, 2vw, 1.12rem);
+    }
 }
 
 /* ========== RESPONSIVE DESIGN - MOBILE ========== */
@@ -664,6 +702,10 @@ footer::before {
         margin: 0;
         border-left: none;
         border-right: none;
+        animation: none !important;
+        box-shadow: 
+            0 15px 40px rgba(255, 23, 68, 0.2),
+            0 0 0 1px rgba(255, 107, 157, 0.1) inset;
     }
     
     .letter-header {
@@ -675,6 +717,7 @@ footer::before {
         font-size: clamp(0.95rem, 4vw, 1.1rem);
         line-height: 1.6;
         padding: 0;
+        animation: none !important;
     }
     
     .letter-content,
@@ -694,6 +737,8 @@ footer::before {
     .love-title {
         font-size: clamp(2.5rem, 12vw, 4.5rem);
         margin-bottom: clamp(1rem, 4vw, 1.8rem);
+        animation: none !important;
+        filter: drop-shadow(0 0 20px rgba(255, 23, 68, 0.4));
     }
     
     .love-title::before,
@@ -701,6 +746,7 @@ footer::before {
         font-size: 0.7em;
         left: -0.8em;
         right: -0.8em;
+        animation: none !important;
     }
     
     .date-badge {
@@ -710,6 +756,7 @@ footer::before {
     
     .floating-heart {
         filter: none;
+        display: none !important;
     }
     
     #interaction-counter {
@@ -785,6 +832,13 @@ footer::before {
         font-size: clamp(0.8rem, 3vw, 0.95rem);
     }
     
+    .cursor-particle,
+    .magic-particle,
+    .sparkle,
+    .interactive-heart {
+        display: none !important;
+    }
+    
     /* Love Letter */
     .love-letter-container {
         padding: 0.6rem 0;
@@ -802,10 +856,18 @@ footer::before {
         margin: 0;
         border-left: none;
         border-right: none;
+        animation: none !important;
+        backdrop-filter: blur(12px) saturate(140%);
+        -webkit-backdrop-filter: blur(12px) saturate(140%);
+        box-shadow: 
+            0 10px 30px rgba(255, 23, 68, 0.15),
+            0 0 0 1px rgba(255, 107, 157, 0.08) inset;
     }
     
     .letter-card::after {
         border-radius: clamp(20px, 4vw, 25px);
+        animation: none !important;
+        opacity: 0.5;
     }
     
     .letter-content {
@@ -817,6 +879,7 @@ footer::before {
         padding: 0;
         font-size: clamp(0.9rem, 4.2vw, 1.05rem);
         line-height: 1.6;
+        animation: none !important;
     }
     
     .signature {
@@ -841,11 +904,18 @@ footer::before {
         font-size: clamp(2rem, 12vw, 3.5rem);
         margin-bottom: clamp(0.8rem, 4vw, 1.5rem);
         line-height: 1.2;
+        animation: none !important;
+        filter: drop-shadow(0 0 15px rgba(255, 23, 68, 0.3));
     }
     
     .love-title::before,
     .love-title::after {
         display: none;
+    }
+    
+    .floating-heart {
+        display: none !important;
+        filter: none;
     }
     
     .love-footer .credits {
@@ -914,6 +984,12 @@ footer::before {
         margin: 0;
         border-left: none;
         border-right: none;
+        animation: none !important;
+        backdrop-filter: blur(10px) saturate(130%);
+        -webkit-backdrop-filter: blur(10px) saturate(130%);
+        box-shadow: 
+            0 8px 25px rgba(255, 23, 68, 0.12),
+            0 0 0 1px rgba(255, 107, 157, 0.06) inset;
     }
     
     .letter-content {
@@ -925,6 +1001,7 @@ footer::before {
         line-height: 1.55;
         margin-bottom: 0.7rem;
         padding: 0;
+        animation: none !important;
     }
     
     .letter-header h2 {
@@ -944,11 +1021,30 @@ footer::before {
     .love-title {
         font-size: clamp(1.8rem, 12vw, 3rem);
         margin-bottom: 0.8rem;
+        animation: none !important;
+        filter: drop-shadow(0 0 12px rgba(255, 23, 68, 0.3));
+    }
+    
+    .love-title::before,
+    .love-title::after {
+        display: none;
+    }
+    
+    .floating-heart {
+        display: none !important;
+        filter: none;
     }
     
     .date-badge {
         padding: 0.4rem 1rem;
         font-size: clamp(0.78rem, 3.2vw, 0.88rem);
+    }
+    
+    .cursor-particle,
+    .magic-particle,
+    .sparkle,
+    .interactive-heart {
+        display: none !important;
     }
 }
 
@@ -1079,7 +1175,7 @@ img, video {
 
 .love-letter-container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -1088,7 +1184,7 @@ img, video {
     animation: fadeInScale 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     z-index: 2;
-    padding: clamp(1rem, 3vh, 1.5rem) clamp(0.8rem, 2.5vw, 1.2rem);
+    padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem);
     box-sizing: border-box;
     overflow-x: hidden;
     overflow-y: auto;
@@ -1096,7 +1192,7 @@ img, video {
 }
 
 .love-title {
-    font-size: clamp(2.2rem, 8vw, 4.5rem);
+    font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 700;
     background: linear-gradient(135deg, 
         #ff6b9d 0%, 
@@ -1109,7 +1205,7 @@ img, video {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmerLove 3s ease-in-out infinite, float 4s ease-in-out infinite;
-    margin-bottom: clamp(1rem, 2.5vh, 1.8rem);
+    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
     filter: drop-shadow(0 0 40px rgba(255, 23, 68, 0.6));
     text-align: center;
     position: relative;
@@ -1163,12 +1259,12 @@ img, video {
 
 .letter-card {
     background: rgba(40, 20, 30, 0.5);
-    backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
-    border-radius: clamp(20px, 4vw, 35px);
-    padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem);
-    max-width: 750px;
-    width: clamp(280px, 92%, 750px);
+    backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
+    border-radius: clamp(25px, 3vw, 40px);
+    padding: clamp(2.5rem, 4.5vw, 4rem) clamp(2rem, 4vw, 3.5rem);
+    max-width: 950px;
+    width: clamp(280px, 88%, 950px);
     box-shadow: 
         0 20px 60px rgba(255, 23, 68, 0.25),
         0 0 0 1px rgba(255, 107, 157, 0.15) inset,
@@ -1268,7 +1364,7 @@ img, video {
 }
 
 .letter-header h2 {
-    font-size: clamp(1.4rem, 5vw, 2.5rem);
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
     color: var(--text-primary);
     font-weight: 600;
     background: linear-gradient(135deg, #ffffff, #ff6b9d);
@@ -1296,10 +1392,10 @@ img, video {
 }
 
 .letter-text {
-    font-size: clamp(0.9rem, 3.5vw, 1.05rem);
-    line-height: 1.65;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.75;
     color: var(--text-primary);
-    margin-bottom: clamp(0.8rem, 2.5vh, 1.2rem);
+    margin-bottom: clamp(1rem, 2.8vh, 1.5rem);
     text-align: center;
     opacity: 0.95;
     animation: fadeInText 2s ease-out backwards;
@@ -1355,10 +1451,10 @@ img, video {
 .signature {
     font-style: italic;
     font-weight: 600;
-    margin-top: clamp(0.8rem, 2.5vh, 1.2rem);
+    margin-top: clamp(1.2rem, 3vh, 1.8rem);
     margin-bottom: 0;
     color: #ff6b9d !important;
-    font-size: clamp(0.9rem, 3.8vw, 1.15rem) !important;
+    font-size: clamp(1.1rem, 2.8vw, 1.35rem) !important;
     line-height: 1.4;
     padding: 0;
     width: 100%;
@@ -1375,13 +1471,13 @@ img, video {
 
 .date-badge {
     display: inline-block;
-    padding: clamp(0.5rem, 2vw, 0.8rem) clamp(1rem, 4vw, 2rem);
+    padding: clamp(0.7rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem);
     background: linear-gradient(135deg, rgba(255, 23, 68, 0.3), rgba(194, 24, 91, 0.3));
     border-radius: 50px;
     border: 1px solid rgba(255, 107, 157, 0.4);
     color: var(--text-primary);
     font-weight: 600;
-    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
     box-shadow: 0 4px 20px rgba(255, 23, 68, 0.3);
     word-wrap: break-word;
 }

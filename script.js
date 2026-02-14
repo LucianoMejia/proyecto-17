@@ -909,11 +909,6 @@ function createCursorParticle(x, y) {
         particle.remove();
         currentParticles--;
     }, 800);
-    
-    // Pequeño punto por rastro
-    if (Math.random() > 0.95) {
-        updateScore(1);
-    }
 }
 
 // Efecto ripple (ondas) al hacer clic
@@ -943,11 +938,10 @@ function createRipple(x, y, container = document.body) {
     
     container.appendChild(ripple);
     setTimeout(() => ripple.remove(), 800);
-    updateScore(1);
 }
 
 // Crear corazones interactivos al hacer clic (OPTIMIZADO)
-function createInteractiveHeart(x, y) {
+function createInteractiveHeart(x, y, addScore = false) {
     if (currentParticles >= maxParticles || isScrolling) return;
     
     currentParticles++;
@@ -984,7 +978,10 @@ function createInteractiveHeart(x, y) {
         heart.remove();
         currentParticles--;
     }, 1000); // Reducido de 1500 a 1000ms
-    updateScore(2);
+    
+    if (addScore) {
+        updateScore(2);
+    }
 }
 
 // Crear explosión de confetti
@@ -1021,7 +1018,6 @@ function createConfetti(x, y) {
         document.body.appendChild(confetti);
         setTimeout(() => confetti.remove(), 1200);
     }
-    updateScore(3);
 }
 
 // Evento de clic en cualquier parte
@@ -1046,11 +1042,13 @@ document.addEventListener('click', (e) => {
         // Clic normal
         createRipple(e.clientX, e.clientY);
         
-        // 50% chance de crear corazón o confetti
+        // 50% chance de crear corazón o confetti (con puntos)
         if (Math.random() > 0.5) {
-            createInteractiveHeart(e.clientX, e.clientY);
+            createInteractiveHeart(e.clientX, e.clientY, true);
+            updateScore(1);
         } else {
             createConfetti(e.clientX, e.clientY);
+            updateScore(1);
         }
         
         lastClickTime = now;
@@ -1106,7 +1104,7 @@ function createMegaExplosion(x, y) {
             const distance = 150 + Math.random() * 100;
             const targetX = x + Math.cos(angle) * distance;
             const targetY = y + Math.sin(angle) * distance;
-            createInteractiveHeart(targetX, targetY);
+            createInteractiveHeart(targetX, targetY, false);
         }, i * 30);
     }
     
@@ -1145,9 +1143,11 @@ document.addEventListener('touchstart', (e) => {
         createRipple(touch.clientX, touch.clientY);
         
         if (Math.random() > 0.5) {
-            createInteractiveHeart(touch.clientX, touch.clientY);
+            createInteractiveHeart(touch.clientX, touch.clientY, true);
+            updateScore(1);
         } else {
             createConfetti(touch.clientX, touch.clientY);
+            updateScore(1);
         }
     }
 }, { passive: true });
@@ -1165,12 +1165,13 @@ function initTimeBoxInteractions() {
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            // Crear múltiples corazones
+            // Crear múltiples corazones y dar puntos
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
-                    createInteractiveHeart(centerX, centerY);
+                    createInteractiveHeart(centerX, centerY, false);
                 }, i * 100);
             }
+            updateScore(5);
             
             // Efecto de brillo (reducido para mejor performance)
             box.style.filter = 'brightness(1.3)';
@@ -1209,7 +1210,8 @@ function initLogoInteraction() {
                     setTimeout(() => {
                         createInteractiveHeart(
                             centerX + (Math.random() - 0.5) * 100,
-                            centerY + (Math.random() - 0.5) * 100
+                            centerY + (Math.random() - 0.5) * 100,
+                            false
                         );
                     }, i * 50);
                 }
@@ -1218,13 +1220,16 @@ function initLogoInteraction() {
                 setTimeout(() => {
                     createConfetti(centerX, centerY);
                 }, 200);
+                
+                updateScore(15);
             } else {
                 // Explosión normal
                 for (let i = 0; i < 8; i++) {
                     setTimeout(() => {
-                        createInteractiveHeart(centerX, centerY);
+                        createInteractiveHeart(centerX, centerY, false);
                     }, i * 80);
                 }
+                updateScore(8);
             }
             
             // Efecto de brillo
@@ -1307,9 +1312,12 @@ function initLetterTextInteraction() {
                 const x = rect.left + Math.random() * rect.width;
                 const y = rect.top + Math.random() * rect.height;
                 setTimeout(() => {
-                    createInteractiveHeart(x, y);
+                    createInteractiveHeart(x, y, false);
                 }, i * 100);
             }
+            
+            // Sumar puntos una sola vez por click
+            updateScore(3);
         });
     });
 }
