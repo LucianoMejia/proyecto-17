@@ -9,6 +9,7 @@ html {
     overflow-x: hidden;
     width: 100%;
     height: 100%;
+    position: fixed;
 }
 
 :root {
@@ -22,10 +23,12 @@ html {
     --accent: #505053;
     --glass-bg: rgba(28, 28, 30, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
+    --blur-desktop: 80px;
+    --blur-mobile: 30px;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: #000000;
     color: var(--text-primary);
     min-height: 100vh;
@@ -35,7 +38,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    position: relative;
+    position: fixed;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -109,6 +112,9 @@ body::after {
     align-items: center;
     justify-content: center;
     min-height: auto;
+    overflow: hidden;
+    max-height: 100vh;
+    box-sizing: border-box;
 }
 
 /* Enhanced shine effect with multiple layers */
@@ -189,29 +195,33 @@ header {
 @keyframes shimmer {
     0%, 100% {
         background-position: 0% center;
+        filter: brightness(1);
     }
     50% {
         background-position: 100% center;
+        filter: brightness(1.2);
     }
 }
 
 @keyframes float {
     0%, 100% {
-        transform: translateY(0px);
+        transform: translateY(0px) rotate(0deg);
     }
     50% {
-        transform: translateY(-10px);
+        transform: translateY(-15px) rotate(1deg);
     }
 }
 
 @keyframes fadeInDown {
     from {
         opacity: 0;
-        transform: translateY(-40px);
+        transform: translateY(-60px) scale(0.9);
+        filter: blur(10px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0);
     }
 }
 
@@ -225,19 +235,21 @@ main {
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(60px) scale(0.9);
+        filter: blur(10px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0);
     }
 }
 
 /* Glassmorphism countdown container */
 .countdown-container {
     background: rgba(28, 28, 30, 0.25);
-    backdrop-filter: blur(80px) saturate(200%);
-    -webkit-backdrop-filter: blur(80px) saturate(200%);
+    backdrop-filter: blur(var(--blur-desktop)) saturate(200%);
+    -webkit-backdrop-filter: blur(var(--blur-desktop)) saturate(200%);
     border-radius: 50px;
     padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 5vw, 4rem);
     box-shadow: 
@@ -248,8 +260,7 @@ main {
     position: relative;
     overflow: hidden;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-    transform: translateZ(0); /* Activar aceleración por hardware */
+    transform: translateZ(0);
     width: 100%;
     max-width: 100%;
 }
@@ -379,8 +390,7 @@ main {
     position: relative;
     filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
     animation: professionalPulse 2s ease-in-out infinite;
-    will-change: transform, opacity;
-    transform: translateZ(0); /* Aceleración por hardware */
+    transform: translateZ(0);
 }
 
 .time-value::before {
@@ -562,6 +572,10 @@ footer::before {
 }
 
 @media (max-width: 768px) {
+    :root {
+        --blur-desktop: var(--blur-mobile);
+    }
+    
     .countdown {
         gap: 1rem;
     }
@@ -573,6 +587,8 @@ footer::before {
     .countdown-container {
         padding: 2.5rem 1.5rem;
         border-radius: 35px;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
     
     header {
@@ -586,6 +602,10 @@ footer::before {
     .time-box {
         padding: 0.8rem 0.5rem;
         min-width: clamp(80px, 20vw, 120px);
+    }
+    
+    .time-value::before {
+        filter: blur(15px);
     }
     
     .logo {
@@ -608,6 +628,18 @@ footer::before {
         min-width: clamp(70px, 22vw, 100px);
     }
     
+    .time-value {
+        font-size: clamp(2.8rem, 11vw, 4rem);
+    }
+    
+    .time-value::before {
+        filter: blur(10px);
+    }
+    
+    .time-label {
+        font-size: clamp(0.65rem, 2.2vw, 0.9rem);
+    }
+    
     header {
         margin-bottom: 2rem;
     }
@@ -628,6 +660,15 @@ footer::before {
     
     .time-box {
         min-width: clamp(60px, 23vw, 85px);
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .time-value {
+        font-size: clamp(2.5rem, 10vw, 3.5rem);
+    }
+    
+    .time-label {
+        font-size: clamp(0.6rem, 2vw, 0.8rem);
     }
 }
 
@@ -636,6 +677,12 @@ footer::before {
     body {
         min-height: 100vh;
         height: auto;
+        position: relative;
+    }
+    
+    .container {
+        max-height: none;
+        overflow: hidden;
     }
     
     .countdown-container {
@@ -652,6 +699,10 @@ footer::before {
     
     .logo {
         font-size: clamp(2rem, 6vh, 3rem);
+    }
+    
+    .time-value {
+        font-size: clamp(2.5rem, 10vh, 5rem);
     }
 }
 
@@ -711,6 +762,14 @@ footer::before {
 * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Mejores estilos para imágenes y media */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Selection colors */
@@ -727,6 +786,21 @@ footer::before {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .countdown-container::before,
+    .countdown-container::after,
+    .letter-card::before,
+    .letter-card::after {
+        animation: none !important;
+    }
+}
+
+/* Optimización para modo oscuro del sistema */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #000000;
     }
 }
 
@@ -738,17 +812,23 @@ footer::before {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     animation: fadeInScale 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     z-index: 2;
-    padding: 1rem;
+    padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 3vw, 1.5rem);
+    padding-left: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-left));
+    padding-right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
+    padding-top: max(clamp(1rem, 3vh, 2rem), env(safe-area-inset-top));
+    padding-bottom: max(clamp(1rem, 3vh, 2rem), env(safe-area-inset-bottom));
     box-sizing: border-box;
-    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+    max-height: 100vh;
 }
 
 .love-title {
-    font-size: clamp(2.5rem, 10vw, 6rem);
+    font-size: clamp(2.2rem, 8vw, 4.5rem);
     font-weight: 700;
     background: linear-gradient(135deg, 
         #ff6b9d 0%, 
@@ -761,13 +841,13 @@ footer::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmerLove 3s ease-in-out infinite, float 4s ease-in-out infinite;
-    margin-bottom: clamp(1.5rem, 5vw, 3rem);
+    margin-bottom: clamp(1rem, 2.5vh, 1.8rem);
     filter: drop-shadow(0 0 40px rgba(255, 23, 68, 0.6));
     text-align: center;
     position: relative;
     line-height: 1.2;
     word-wrap: break-word;
-    padding: 0 0.5rem;
+    padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
 
 .love-title::before {
@@ -789,43 +869,48 @@ footer::before {
 @keyframes shimmerLove {
     0%, 100% {
         background-position: 0% center;
+        filter: brightness(1) drop-shadow(0 0 40px rgba(255, 23, 68, 0.6));
     }
     50% {
         background-position: 100% center;
+        filter: brightness(1.3) drop-shadow(0 0 60px rgba(255, 23, 68, 0.9));
     }
 }
 
 @keyframes fadeInScale {
     0% {
         opacity: 0;
-        transform: scale(0.8) translateY(30px);
+        transform: scale(0.7) translateY(50px) rotateX(-20deg);
+        filter: blur(15px);
+    }
+    60% {
+        transform: scale(1.02) translateY(-10px) rotateX(5deg);
     }
     100% {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: scale(1) translateY(0) rotateX(0);
+        filter: blur(0);
     }
 }
 
 .letter-card {
     background: rgba(40, 20, 30, 0.4);
-    backdrop-filter: blur(60px) saturate(180%);
-    -webkit-backdrop-filter: blur(60px) saturate(180%);
-    border-radius: 40px;
-    padding: clamp(2rem, 6vw, 4rem);
+    backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-desktop)) saturate(180%);
+    border-radius: clamp(25px, 5vw, 40px);
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.2rem, 3.5vw, 2rem);
     max-width: 800px;
-    width: 90%;
+    width: clamp(280px, 92%, 800px);
     box-shadow: 
         0 20px 60px rgba(255, 23, 68, 0.3),
         0 0 0 1px rgba(255, 107, 157, 0.2) inset,
         0 0 100px rgba(255, 23, 68, 0.1);
     border: 2px solid rgba(255, 107, 157, 0.15);
     position: relative;
-    overflow: hidden;
     animation: cardPulse 4s ease-in-out infinite;
     box-sizing: border-box;
     margin: 0 auto;
-    will-change: box-shadow;
-    transform: translateZ(0); /* Aceleración por hardware */
+    transform: translateZ(0);
 }
 
 @keyframes cardPulse {
@@ -834,32 +919,35 @@ footer::before {
             0 20px 60px rgba(255, 23, 68, 0.3),
             0 0 0 1px rgba(255, 107, 157, 0.2) inset,
             0 0 100px rgba(255, 23, 68, 0.1);
+        transform: scale(1);
     }
     50% {
         box-shadow: 
             0 25px 70px rgba(255, 23, 68, 0.4),
             0 0 0 1px rgba(255, 107, 157, 0.3) inset,
             0 0 120px rgba(255, 23, 68, 0.2);
+        transform: scale(1.002);
     }
 }
 
 .letter-card::before {
     content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(255, 107, 157, 0.1) 40%,
-        rgba(255, 23, 68, 0.2) 50%,
-        rgba(255, 107, 157, 0.1) 60%,
-        transparent 70%
+        135deg,
+        rgba(255, 23, 68, 0.05) 0%,
+        rgba(194, 24, 91, 0.08) 50%,
+        rgba(255, 107, 157, 0.05) 100%
     );
-    animation: rotateLoveGradient 8s linear infinite;
+    pointer-events: none;
+    z-index: -1;
 }
+
+/* Estilos optimizados para la carta */
 
 @keyframes rotateLoveGradient {
     0% {
@@ -872,18 +960,18 @@ footer::before {
 
 .letter-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1rem, 2.5vh, 1.5rem);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(0.5rem, 2vw, 1rem);
     position: relative;
     z-index: 1;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .heart-icon {
-    font-size: clamp(1.5rem, 5vw, 3rem);
+    font-size: clamp(1.4rem, 5vw, 2.5rem);
     animation: heartbeat 1.5s ease-in-out infinite;
     display: inline-block;
     flex-shrink: 0;
@@ -892,17 +980,20 @@ footer::before {
 @keyframes heartbeat {
     0%, 100% {
         transform: scale(1);
+        filter: brightness(1);
     }
     10%, 30% {
-        transform: scale(1.1);
+        transform: scale(1.15);
+        filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 23, 68, 0.8));
     }
     20%, 40% {
-        transform: scale(1);
+        transform: scale(1.05);
+        filter: brightness(1.1);
     }
 }
 
 .letter-header h2 {
-    font-size: clamp(1.4rem, 5vw, 3rem);
+    font-size: clamp(1.4rem, 5vw, 2.5rem);
     color: var(--text-primary);
     font-weight: 600;
     background: linear-gradient(135deg, #ffffff, #ff6b9d);
@@ -912,24 +1003,26 @@ footer::before {
     line-height: 1.3;
     margin: 0;
     padding: 0;
+    white-space: nowrap;
 }
 
 .letter-content {
     position: relative;
     z-index: 1;
-    margin: clamp(1.5rem, 4vw, 2rem) 0;
+    margin: clamp(0.5rem, 2vh, 1rem) 0;
 }
 
 .letter-text {
-    font-size: clamp(0.95rem, 2.5vw, 1.3rem);
-    line-height: 1.8;
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+    line-height: 1.7;
     color: var(--text-primary);
-    margin-bottom: clamp(1rem, 3vw, 1.5rem);
+    margin-bottom: clamp(0.7rem, 2vh, 1rem);
     text-align: center;
     opacity: 0.95;
     animation: fadeInText 2s ease-out backwards;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .letter-text:nth-child(2) {
@@ -944,29 +1037,47 @@ footer::before {
     animation-delay: 0.9s;
 }
 
+.letter-text:nth-child(5) {
+    animation-delay: 1.2s;
+}
+
+.letter-text:nth-child(6) {
+    animation-delay: 1.5s;
+}
+
+.letter-text:nth-child(7) {
+    animation-delay: 1.8s;
+}
+
 @keyframes fadeInText {
     0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px) scale(0.95);
+        filter: blur(5px);
+    }
+    60% {
+        transform: translateY(-5px) scale(1.01);
     }
     100% {
         opacity: 0.95;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0);
     }
 }
 
 .signature {
     font-style: italic;
     font-weight: 600;
-    margin-top: clamp(1.5rem, 4vw, 2rem);
+    margin-top: clamp(0.6rem, 2vh, 1rem);
+    margin-bottom: 0;
     color: #ff6b9d !important;
-    font-size: clamp(1rem, 2.8vw, 1.5rem) !important;
-    line-height: 1.5;
+    font-size: clamp(0.85rem, 2.2vw, 1.1rem) !important;
+    line-height: 1.4;
 }
 
 .letter-footer {
     text-align: center;
-    margin-top: clamp(1.5rem, 4vw, 2rem);
+    margin-top: clamp(1rem, 3vw, 1.5rem);
     position: relative;
     z-index: 1;
 }
@@ -986,17 +1097,17 @@ footer::before {
 
 .love-footer {
     text-align: center;
-    margin-top: clamp(2rem, 5vw, 3rem);
+    margin-top: clamp(0.8rem, 2vh, 1.5rem);
     position: relative;
     z-index: 1;
     padding: 0 1rem;
 }
 
 .love-footer .credits {
-    font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
 }
 
 .name-highlight {
@@ -1011,10 +1122,10 @@ footer::before {
 }
 
 .credits-small {
-    font-size: clamp(0.75rem, 2vw, 0.95rem);
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
     color: var(--text-secondary);
     opacity: 0.7;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Corazones flotantes */
@@ -1035,9 +1146,8 @@ footer::before {
     animation: floatUp linear;
     opacity: 0;
     filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.6));
-    will-change: transform, opacity;
-    transform: translateZ(0); /* Aceleración por hardware */
-    padding: 15px; /* Padding para que no se vea el rectángulo al rotar */
+    transform: translateZ(0);
+    padding: 15px;
     display: inline-block;
     line-height: 1;
 }
@@ -1068,74 +1178,69 @@ footer::before {
 /* Responsive para carta de amor */
 @media (max-width: 992px) {
     .love-letter-container {
-        padding: 1rem;
+        padding: clamp(1rem, 3vh, 1.5rem) clamp(0.8rem, 2.5vw, 1.2rem);
     }
     
     .letter-card {
-        padding: 2.5rem 2rem;
-        width: 92%;
+        width: 94%;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+    }
+}
+
+/* Tablets en modo portrait */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+    .letter-card {
+        width: 90%;
+        max-width: 700px;
     }
     
-    .letter-header h2 {
-        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    .letter-text {
+        font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+        line-height: 1.75;
     }
 }
 
 @media (max-width: 768px) {
     .love-letter-container {
-        padding: 0.5rem;
+        padding: clamp(0.8rem, 2.5vh, 1.2rem) clamp(0.6rem, 2vw, 1rem);
     }
     
     /* Optimizar backdrop-filter en móvil */
     .letter-card {
-        padding: 2rem 1.5rem;
-        border-radius: 30px;
-        width: 94%;
-        max-width: none;
-        backdrop-filter: blur(40px) saturate(180%); /* Menos blur en móvil */
-        -webkit-backdrop-filter: blur(40px) saturate(180%);
+        width: 95%;
+        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
     
     /* Optimizar efectos en móvil */
     .floating-heart {
-        filter: none; /* Remover drop-shadow en móvil para mejor rendimiento */
+        filter: none;
     }
     
     /* Optimizar countdown en móvil */
     .countdown-container {
-        backdrop-filter: blur(40px) saturate(180%);
-        -webkit-backdrop-filter: blur(40px) saturate(180%);
+        backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--blur-mobile)) saturate(180%);
     }
     
     .letter-header {
-        flex-wrap: wrap;
-        gap: 0.8rem;
-    }
-    
-    .letter-header h2 {
-        width: 100%;
-        font-size: clamp(1.4rem, 6vw, 2rem);
-    }
-    
-    .heart-icon {
-        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        flex-wrap: nowrap;
     }
     
     .letter-text {
-        text-align: left;
-        font-size: clamp(0.95rem, 3.5vw, 1.2rem);
-        line-height: 1.7;
-        margin-bottom: 1.2rem;
+        text-align: center;
     }
     
     .signature {
-        font-size: clamp(1rem, 3.5vw, 1.3rem) !important;
-        margin-top: 1.5rem;
+        font-size: clamp(0.9rem, 3.3vw, 1.2rem) !important;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
     }
     
     .love-title {
         font-size: clamp(2.5rem, 12vw, 4.5rem);
-        margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
+        margin-bottom: clamp(1rem, 4vw, 1.8rem);
     }
     
     .love-title::before,
@@ -1161,65 +1266,43 @@ footer::before {
 
 @media (max-width: 480px) {
     .love-letter-container {
-        padding: 0.3rem;
+        padding: clamp(0.6rem, 2vh, 1rem) clamp(0.5rem, 1.5vw, 0.8rem);
     }
     
     .letter-card {
-        padding: 1.5rem 1rem;
         width: 96%;
-        border-radius: 25px;
         border-width: 1.5px;
     }
     
     .letter-card::after {
-        border-radius: 25px;
-    }
-    
-    .letter-header {
-        margin-bottom: 1.5rem;
-        gap: 0.6rem;
-    }
-    
-    .letter-header h2 {
-        font-size: clamp(1.2rem, 7vw, 1.8rem);
-        line-height: 1.3;
-    }
-    
-    .heart-icon {
-        font-size: clamp(1.3rem, 6vw, 2rem);
-    }
-    
-    .letter-content {
-        margin: 1.5rem 0;
+        border-radius: clamp(20px, 4vw, 25px);
     }
     
     .letter-text {
-        font-size: clamp(0.9rem, 4vw, 1.1rem);
-        line-height: 1.6;
-        margin-bottom: 1rem;
-        text-align: left;
-        padding: 0 0.2rem;
+        text-align: center;
+        padding: 0;
     }
     
     .signature {
-        font-size: clamp(0.95rem, 4vw, 1.2rem) !important;
-        margin-top: 1.2rem;
+        font-size: clamp(0.95rem, 4vw, 1.15rem) !important;
+        margin-top: clamp(1rem, 2vh, 1.3rem);
         text-align: center;
+        margin-bottom: 0.5rem;
     }
     
     .letter-footer {
-        margin-top: 1.5rem;
+        margin-top: clamp(1rem, 2vh, 1.5rem);
     }
     
     .date-badge {
-        padding: 0.5rem 1.2rem;
-        font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+        padding: 0.6rem 1.3rem;
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
         border-radius: 40px;
     }
     
     .love-title {
-        font-size: clamp(2rem, 14vw, 3.5rem);
-        margin-bottom: clamp(1.2rem, 5vw, 2rem);
+        font-size: clamp(2rem, 12vw, 3.5rem);
+        margin-bottom: clamp(0.8rem, 4vw, 1.5rem);
         line-height: 1.2;
     }
     
@@ -1245,84 +1328,105 @@ footer::before {
 
 @media (max-width: 360px) {
     .letter-card {
-        padding: 1.2rem 0.8rem;
+        padding: 1rem 0.7rem;
         width: 98%;
+        max-height: 68vh;
     }
     
     .letter-header h2 {
-        font-size: 1.1rem;
+        font-size: clamp(1.1rem, 6.5vw, 1.5rem);
     }
     
     .heart-icon {
-        font-size: 1.2rem;
+        font-size: clamp(1.2rem, 5.5vw, 1.7rem);
     }
     
     .letter-text {
-        font-size: 0.88rem;
-        line-height: 1.5;
+        font-size: clamp(0.82rem, 3.6vw, 0.95rem);
+        line-height: 1.55;
+        margin-bottom: 0.7rem;
     }
     
     .signature {
-        font-size: 0.92rem !important;
+        font-size: clamp(0.85rem, 3.6vw, 1rem) !important;
+        margin-top: 0.8rem;
     }
     
     .love-title {
-        font-size: 1.8rem;
+        font-size: clamp(1.8rem, 12vw, 3rem);
+        margin-bottom: 0.8rem;
     }
     
     .date-badge {
         padding: 0.4rem 1rem;
-        font-size: 0.78rem;
+        font-size: clamp(0.78rem, 3.2vw, 0.88rem);
     }
 }
 
 /* Landscape en móviles */
 @media (max-height: 600px) and (orientation: landscape) {
     .love-letter-container {
-        padding: 0.5rem;
+        padding: clamp(0.5rem, 2vh, 1rem) clamp(1rem, 3vw, 1.5rem);
     }
     
     .letter-card {
-        padding: 1.5rem 2rem;
-        max-height: 85vh;
-        overflow-y: auto;
+        padding: clamp(1rem, 3vh, 1.5rem) clamp(1.5rem, 4vw, 2rem);
     }
     
     .love-title {
         font-size: clamp(1.8rem, 8vh, 3rem);
-        margin-bottom: 1rem;
+        margin-bottom: clamp(0.6rem, 1.5vh, 1rem);
     }
     
     .letter-header {
-        margin-bottom: 1rem;
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
     }
     
     .letter-content {
-        margin: 1rem 0;
+        margin: clamp(0.6rem, 1.5vh, 1rem) 0;
     }
     
     .letter-text {
-        margin-bottom: 0.8rem;
+        margin-bottom: clamp(0.5rem, 1.5vh, 0.8rem);
+        font-size: clamp(0.85rem, 2.2vh, 1rem);
+        line-height: 1.65;
     }
     
     .letter-footer {
-        margin-top: 1rem;
+        margin-top: clamp(0.6rem, 1.5vh, 1rem);
     }
     
     .love-footer {
-        margin-top: 1.5rem;
+        margin-top: 1.2rem;
     }
 }
 
 /* Ajustes adicionales para tabletas */
 @media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        width: 92%;
+    }
+    
+    .countdown-container {
+        padding: 4rem 3rem;
+    }
+    
+    .time-box {
+        min-width: clamp(100px, 15vw, 130px);
+    }
+    
+    .time-value {
+        font-size: clamp(4rem, 10vw, 7rem);
+    }
+    
     .letter-card {
         max-width: 700px;
-        padding: 3rem 2.5rem;
+        padding: 2.5rem 2rem;
+        max-height: 82vh;
     }
     
     .letter-text {
-        font-size: 1.15rem;
+        font-size: clamp(0.95rem, 2.2vw, 1.1rem);
     }
 }
 
@@ -1336,8 +1440,7 @@ footer::before {
     pointer-events: none;
     animation: sparkleFloat linear;
     z-index: 101;
-    will-change: transform, opacity;
-    transform: translateZ(0); /* Aceleración por hardware */
+    transform: translateZ(0);
 }
 
 @keyframes sparkleFloat {
@@ -1426,5 +1529,559 @@ footer::before {
     100% {
         transform: translate(var(--angle-x), var(--angle-y)) scale(0.3) rotate(360deg);
         opacity: 0;
+    }
+}
+
+/* Optimizaciones para pantallas de alta resolución (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        -webkit-font-smoothing: subpixel-antialiased;
+    }
+    
+    .time-value,
+    .logo,
+    .love-title {
+        -webkit-text-stroke: 0.5px transparent;
+    }
+}
+
+/* Optimización para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+    .time-box:hover {
+        transform: none;
+    }
+    
+    .countdown-container:hover {
+        transform: none;
+        background: rgba(28, 28, 30, 0.25);
+        box-shadow: 
+            0 8px 32px 0 rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+            0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+    }
+    
+    /* Desactivar efectos hover en móviles */
+    .time-box:hover .time-value {
+        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
+        transform: none;
+    }
+    
+    .time-box:hover .time-label {
+        opacity: 0.7;
+        color: var(--text-secondary);
+        transform: none;
+        letter-spacing: clamp(0.1em, 0.5vw, 0.2em);
+    }
+}
+
+/* Soporte para navegadores antiguos */
+@supports not (backdrop-filter: blur(10px)) {
+    .countdown-container,
+    .letter-card {
+        background: rgba(28, 28, 30, 0.85);
+    }
+}
+
+/* Optimización para Safari iOS */
+@supports (-webkit-touch-callout: none) {
+    body {
+        min-height: -webkit-fill-available;
+    }
+    
+    .container {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* ========== ANIMACIONES INTERACTIVAS Y JUEGOS ========== */
+
+/* Partículas del cursor */
+.cursor-particle {
+    animation: cursorParticleFade 0.8s ease-out forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+@keyframes cursorParticleFade {
+    0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1) translateZ(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0) translateY(-30px) translateZ(0);
+    }
+}
+
+/* Efecto ripple */
+.ripple-effect {
+    animation: rippleExpand 0.8s ease-out forwards !important;
+    will-change: width, height, opacity;
+    backface-visibility: hidden;
+}
+
+@keyframes rippleExpand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* Mega ripple para doble clic */
+@keyframes megaRipple {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 600px;
+        height: 600px;
+        opacity: 0;
+    }
+}
+
+/* Flash de luz */
+@keyframes flashFade {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Logros/Achievements popup */
+@keyframes achievementPop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0) rotate(-10deg);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+    }
+    40% {
+        transform: translate(-50%, -50%) scale(0.95) rotate(-2deg);
+    }
+    60% {
+        transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+    }
+    80% {
+        transform: translate(-50%, -50%) scale(1) rotate(0);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) translateY(-50px);
+    }
+}
+
+/* Mensaje emergente */
+@keyframes messagePop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.3);
+    }
+    40% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5) translateY(-30px);
+    }
+}
+
+/* Animación de puntos de combo */
+@keyframes comboPointsFloat {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 20px) scale(0.5);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, 0px) scale(1.2);
+    }
+    70% {
+        opacity: 1;
+        transform: translate(-50%, -20px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -40px) scale(0.8);
+    }
+}
+
+/* Animación de combo terminado */
+@keyframes comboBreakAnim {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.3);
+    }
+    35% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5) translateY(-30px);
+    }
+}
+
+/* Corazones interactivos */
+.interactive-heart {
+    animation: interactiveHeartFloat 1s ease-out forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+@keyframes interactiveHeartFloat {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(
+            calc(-50% + var(--tx)),
+            calc(-50% + var(--ty))
+        ) scale(1.2) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+            calc(-50% + var(--tx) * 1.5),
+            calc(-50% + var(--ty) * 2)
+        ) scale(0.8) rotate(360deg);
+    }
+}
+
+/* Confetti */
+.confetti-piece {
+    animation: confettiFly 1.2s ease-out forwards !important;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+@keyframes confettiFly {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+            calc(-50% + var(--angle-x)),
+            calc(-50% + var(--angle-y) + 100px)
+        ) rotate(var(--rotation)) scale(0.3);
+    }
+}
+
+/* Partículas mágicas flotantes */
+.magic-particle {
+    animation: magicFloat 3s ease-in forwards !important;
+}
+
+@keyframes magicFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(0) translateX(0) scale(0);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(-50px) translateX(10px) scale(1);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-200px) translateX(-20px) scale(0.5);
+    }
+}
+
+/* Mejoras en las animaciones de los time-box */
+.time-box {
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.time-box::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.time-box:hover::after {
+    opacity: 1;
+}
+
+.time-box:active {
+    transform: scale(0.95);
+}
+
+/* Animación de entrada mejorada para time-boxes */
+@keyframes timeBoxEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8) rotateX(-20deg);
+    }
+    60% {
+        transform: translateY(-10px) scale(1.05) rotateX(5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0);
+    }
+}
+
+/* Efecto de brillo en hover */
+.time-value {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.time-value:hover {
+    animation: none;
+    filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.9)) brightness(1.2);
+    transform: scale(1.08) translateY(-5px);
+}
+
+/* Mejorar animación del logo */
+.logo {
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.logo:hover {
+    transform: scale(1.05) translateY(-5px);
+    filter: drop-shadow(0 0 80px rgba(255, 255, 255, 0.3));
+    animation-play-state: paused;
+}
+
+.logo:active {
+    transform: scale(0.98);
+}
+
+/* Animaciones mejoradas para el countdown container */
+.countdown-container {
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.countdown-container:active {
+    transform: scale(0.99);
+}
+
+/* Mejoras en la carta de amor */
+.letter-text {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.letter-text::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(255, 182, 193, 0.08),
+        transparent);
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.letter-text:hover::before {
+    opacity: 1;
+}
+
+/* Animación de entrada mejorada para la carta */
+@keyframes letterCardEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotateY(-30deg);
+        filter: blur(10px);
+    }
+    60% {
+        transform: scale(1.03) rotateY(5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0);
+        filter: blur(0);
+    }
+}
+
+/* Título de amor mejorado */
+.love-title {
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.love-title:hover {
+    transform: scale(1.08) rotate(2deg);
+    filter: drop-shadow(0 0 60px rgba(255, 23, 68, 0.9));
+}
+
+.love-title:active {
+    transform: scale(0.95);
+}
+
+/* Corazones del header interactivos */
+.heart-icon {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+}
+
+.heart-icon:hover {
+    transform: scale(1.3) rotate(15deg);
+    filter: drop-shadow(0 0 20px rgba(255, 23, 68, 0.8));
+}
+
+.heart-icon:active {
+    transform: scale(0.9);
+}
+
+/* Efecto de pulso más suave y profesional */
+@keyframes professionalPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
+    }
+    50% {
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 45px rgba(255, 255, 255, 0.7));
+    }
+}
+
+/* Animación de número cambiando mejorada */
+@keyframes numberChange {
+    0% {
+        transform: scale(1) translateY(0) rotateX(0deg);
+        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)) blur(0);
+        opacity: 1;
+    }
+    30% {
+        transform: scale(0.85) translateY(-15px) rotateX(-90deg);
+        filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.9)) blur(2px);
+        opacity: 0.7;
+    }
+    60% {
+        transform: scale(1.15) translateY(5px) rotateX(90deg);
+        filter: drop-shadow(0 0 80px rgba(255, 255, 255, 1)) blur(0);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1) translateY(0) rotateX(0deg);
+        filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)) blur(0);
+        opacity: 1;
+    }
+}
+
+/* Separadores mejorados */
+.separator {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: default;
+}
+
+/* Scroll personalizado más bonito */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0.1));
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.2));
+}
+
+/* Optimizar para dispositivos de bajo rendimiento */
+@media (max-width: 768px) {
+    .cursor-particle,
+    .magic-particle {
+        display: none;
+    }
+    
+    #interaction-counter {
+        top: 10px !important;
+        right: 10px !important;
+        font-size: 12px !important;
+        padding: 8px 15px !important;
+    }
+    
+    @keyframes rippleExpand {
+        0% {
+            width: 0;
+            height: 0;
+            opacity: 1;
+        }
+        100% {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
+    }
+}
+
+/* Desactivar algunas animaciones en modo reducido de movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .cursor-particle,
+    .ripple-effect,
+    .interactive-heart,
+    .confetti-piece,
+    .magic-particle {
+        display: none !important;
     }
 }

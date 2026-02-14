@@ -1,8 +1,14 @@
 // Fecha objetivo: 14 de febrero de 2026
-const targetDate = new Date('February 14, 2026 00:00:00').getTime();
+const targetDate = new Date('February 13, 2026 00:00:00').getTime();
 
-// Detectar si es dispositivo móvil
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+// Detección mejorada de dispositivo móvil
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                 window.innerWidth < 768 || 
+                 ('ontouchstart' in window) || 
+                 (navigator.maxTouchPoints > 0);
+
+// Detección de capacidad de rendimiento
+const isLowPerformance = isMobile || navigator.hardwareConcurrency <= 4;
 
 // Elementos del DOM
 const daysElement = document.getElementById('days');
@@ -47,7 +53,7 @@ function updateCountdown() {
     const distance = targetDate - now;
 
     // Si la cuenta regresiva ha terminado
-    if (distance < 0) {
+    if (distance <= 0) {
         // Mostrar la carta de amor solo una vez
         if (!loveLetterShown) {
             loveLetterShown = true;
@@ -83,6 +89,10 @@ function updateCountdown() {
 function showLoveLetter() {
     const container = document.querySelector('.container');
     const body = document.body;
+    
+    // Deshabilitar combos cuando aparece la carta
+    comboEnabled = false;
+    removeComboDisplay();
     
     // Cambiar el título de la página
     document.title = '💕 Amor y Amistad 💕';
@@ -164,6 +174,24 @@ function showLoveLetter() {
                             del tiempo y la distancia. Eres mi compañera, mi confidente, mi todo.
                         </p>
                         
+                        <p class="letter-text">
+                            Eres una mujer fuerte, valiente e increíble. Estoy muy orgulloso de todo lo que haces,
+                            de cada logro, de cada paso que das. Siempre he confiado en ti y voy a confiar en ti,
+                            porque sé que eres capaz de alcanzar cualquier meta que te propongas.
+                        </p>
+                        
+                        <p class="letter-text">
+                            Yo sé que vas a ser de las mejores ingenieras del mundo. Tu dedicación, tu inteligencia
+                            y tu pasión te llevarán a lugares extraordinarios. Y yo estaré ahí, aplaudiéndote,
+                            apoyándote y amándote en cada momento.
+                        </p>
+                        
+                        <p class="letter-text">
+                            Espero estar con vida para amarte y apoyarte hasta que estemos viejitos, 
+                            tomados de la mano, recordando todos estos momentos hermosos que hemos vivido juntos.
+                            Porque contigo, mi amor, quiero pasar cada día de mi vida.
+                        </p>
+                        
                         <p class="letter-text signature">
                             Te amo hoy y siempre,<br>
                             Tu amor eterno 💕
@@ -206,8 +234,8 @@ function createHeartExplosion() {
     document.body.appendChild(explosionContainer);
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓', '💘'];
-    // Ajustar cantidad según dispositivo
-    const particleCount = isMobile ? 30 : 50;
+    // Ajustar cantidad según dispositivo y rendimiento
+    const particleCount = isLowPerformance ? 25 : (isMobile ? 30 : 50);
     
     for (let i = 0; i < particleCount; i++) {
         const heart = document.createElement('div');
@@ -228,6 +256,7 @@ function createHeartExplosion() {
             padding: 15px;
             display: inline-block;
             line-height: 1;
+            transform: translateZ(0);
         `;
         
         explosionContainer.appendChild(heart);
@@ -245,7 +274,7 @@ function createFloatingHearts() {
     document.body.appendChild(heartsContainer);
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞'];
-    const heartInterval = isMobile ? 600 : 400; // Menos frecuente en móvil
+    const heartInterval = isLowPerformance ? 800 : (isMobile ? 600 : 400);
     
     setInterval(() => {
         const heart = document.createElement('div');
@@ -255,7 +284,6 @@ function createFloatingHearts() {
         heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
         heart.style.fontSize = isMobile ? (Math.random() * 20 + 20) + 'px' : (Math.random() * 30 + 25) + 'px';
         heart.style.setProperty('--random-x', (Math.random() * 200 - 100) + 'px');
-        heart.style.willChange = 'transform, opacity';
         heartsContainer.appendChild(heart);
         
         setTimeout(() => {
@@ -264,7 +292,7 @@ function createFloatingHearts() {
     }, heartInterval);
     
     // Partículas adicionales de corazones pequeños (menos en móvil)
-    if (!isMobile) {
+    if (!isMobile && !isLowPerformance) {
         setInterval(() => {
             const smallHeart = document.createElement('div');
             smallHeart.className = 'floating-heart';
@@ -274,7 +302,6 @@ function createFloatingHearts() {
             smallHeart.style.fontSize = (Math.random() * 15 + 10) + 'px';
             smallHeart.style.setProperty('--random-x', (Math.random() * 150 - 75) + 'px');
             smallHeart.style.opacity = '0.6';
-            smallHeart.style.willChange = 'transform, opacity';
             heartsContainer.appendChild(smallHeart);
             
             setTimeout(() => {
@@ -284,12 +311,14 @@ function createFloatingHearts() {
     }
     
     // Crear partículas brillantes
-    createSparkles();
+    if (!isLowPerformance) {
+        createSparkles();
+    }
 }
 
 // Función para crear partículas brillantes
 function createSparkles() {
-    const sparkleInterval = isMobile ? 400 : 200; // Menos frecuente en móvil
+    const sparkleInterval = isLowPerformance ? 600 : (isMobile ? 400 : 200);
     
     setInterval(() => {
         const sparkle = document.createElement('div');
@@ -297,7 +326,6 @@ function createSparkles() {
         sparkle.style.left = Math.random() * 100 + 'vw';
         sparkle.style.bottom = '0px';
         sparkle.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        sparkle.style.willChange = 'transform, opacity';
         document.body.appendChild(sparkle);
         
         setTimeout(() => {
@@ -309,8 +337,10 @@ function createSparkles() {
 // Actualizar cada segundo
 setInterval(updateCountdown, 1000);
 
-// Ejecutar inmediatamente
-updateCountdown();
+// Ejecutar inmediatamente al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    updateCountdown();
+});
 
 // Animaciones de entrada mejoradas
 document.addEventListener('DOMContentLoaded', () => {
@@ -335,71 +365,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Efectos interactivos mejorados
 function addInteractiveEffects() {
-    const timeBoxes = document.querySelectorAll('.time-box');
-    
-    timeBoxes.forEach(box => {
-        box.addEventListener('mouseenter', function() {
-            this.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-            // Añadir efecto de intensidad al valor
-            const value = this.querySelector('.time-value');
-            if (value) {
-                value.style.animationPlayState = 'paused';
-            }
-        });
-        
-        box.addEventListener('mouseleave', function() {
-            this.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-            // Reanudar animación
-            const value = this.querySelector('.time-value');
-            if (value) {
-                value.style.animationPlayState = 'running';
-            }
-        });
-    });
+    // Efectos hover deshabilitados para evitar lag
+    // Solo mantener las animaciones CSS nativas
 }
 
 // Efectos profesionales de fondo y ambiente
 function initProfessionalEffects() {
-    // Parallax sutil y profesional (más controlado)
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-        // Movimiento más sutil y profesional
-        targetX = (e.clientX / window.innerWidth - 0.5) * 0.5;
-        targetY = (e.clientY / window.innerHeight - 0.5) * 0.5;
-    });
-    
-    // Smooth animation loop para parallax sutil
-    function animateParallax() {
-        currentX += (targetX - currentX) * 0.05;
-        currentY += (targetY - currentY) * 0.05;
+    // Solo habilitar parallax en dispositivos con buen rendimiento
+    if (!isMobile && !isLowPerformance) {
+        // Parallax sutil y profesional (más controlado)
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
         
-        const container = document.querySelector('.countdown-container');
-        if (container) {
-            container.style.transform = `
-                perspective(1500px)
-                rotateY(${currentX * 1.5}deg)
-                rotateX(${-currentY * 1.5}deg)
-                translateZ(0)
-            `;
+        const handleParallax = throttle((e) => {
+            // Movimiento más sutil y profesional
+            targetX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+            targetY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+        }, 16);
+        
+        document.addEventListener('mousemove', handleParallax);
+        
+        // Smooth animation loop para parallax sutil
+        function animateParallax() {
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
+            
+            const container = document.querySelector('.countdown-container');
+            if (container) {
+                container.style.transform = `
+                    perspective(1500px)
+                    rotateY(${currentX * 1.5}deg)
+                    rotateX(${-currentY * 1.5}deg)
+                    translateZ(0)
+                `;
+            }
+            
+            // Parallax mínimo para el logo
+            const logo = document.querySelector('.logo');
+            if (logo) {
+                logo.style.transform = `
+                    translateX(${currentX * 5}px)
+                    translateY(${currentY * 5}px)
+                `;
+            }
+            
+            requestAnimationFrame(animateParallax);
         }
         
-        // Parallax mínimo para el logo
-        const logo = document.querySelector('.logo');
-        if (logo) {
-            logo.style.transform = `
-                translateX(${currentX * 5}px)
-                translateY(${currentY * 5}px)
-            `;
-        }
-        
-        requestAnimationFrame(animateParallax);
+        animateParallax();
     }
-    
-    animateParallax();
 }
 
 // Actualizar atributos data para el efecto glow
@@ -411,3 +427,877 @@ function updateDataAttributes() {
 }
 
 setInterval(updateDataAttributes, 1000);
+
+// Manejar cambios de orientación y redimensionamiento
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        // Actualizar detección de móvil en caso de rotación
+        const currentIsMobile = window.innerWidth < 768;
+        if (currentIsMobile !== isMobile) {
+            location.reload(); // Recargar si cambia el tipo de dispositivo
+        }
+    }, 250);
+});
+
+// Prevenir zoom en doble tap en iOS
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, { passive: false });
+
+// Optimización: Pausar animaciones cuando la pestaña no está visible
+document.addEventListener('visibilitychange', () => {
+    const timeBoxes = document.querySelectorAll('.time-box');
+    if (document.hidden) {
+        // Pausar animaciones cuando no está visible
+        timeBoxes.forEach(box => {
+            const value = box.querySelector('.time-value');
+            if (value) {
+                value.style.animationPlayState = 'paused';
+            }
+        });
+    } else {
+        // Reanudar animaciones cuando vuelve a estar visible
+        timeBoxes.forEach(box => {
+            const value = box.querySelector('.time-value');
+            if (value) {
+                value.style.animationPlayState = 'running';
+            }
+        });
+    }
+});
+
+// ========== SISTEMA INTERACTIVO DE JUEGOS Y ANIMACIONES ==========
+
+// Función throttle para limitar frecuencia de eventos
+function throttle(func, delay) {
+    let lastCall = 0;
+    return function(...args) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+            lastCall = now;
+            return func.apply(this, args);
+        }
+    };
+}
+
+// Variables globales para interacciones
+let mouseX = 0;
+let mouseY = 0;
+let isMouseDown = false;
+let particles = [];
+let cursorTrailEnabled = true;
+let interactionScore = 0;
+let currentParticles = 0;
+let maxParticles = isMobile ? 30 : 50;
+let isScrolling = false;
+let scrollTimeout;
+
+// Sistema de combos
+let comboCount = 0;
+let comboTimer = null;
+let lastComboTime = 0;
+const COMBO_TIMEOUT = 1000; // 1 segundo para mantener combo
+const COMBO_MULTIPLIERS = {
+    1: 1,
+    2: 1.2,
+    3: 1.5,
+    5: 2,
+    10: 3,
+    15: 4,
+    20: 5
+};
+let comboEnabled = true; // Solo habilitado en countdown
+
+// Crear contador de interacciones (mini-juego)
+function createInteractionCounter() {
+    const counter = document.createElement('div');
+    counter.id = 'interaction-counter';
+    counter.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(28, 28, 30, 0.7);
+        backdrop-filter: blur(20px);
+        padding: 10px 20px;
+        border-radius: 20px;
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10001;
+        opacity: 0;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+    `;
+    counter.innerHTML = `✨ Interacciones: <span id="score">0</span>`;
+    document.body.appendChild(counter);
+    
+    // Mostrar el contador después de la primera interacción
+    setTimeout(() => {
+        counter.style.opacity = '0.8';
+    }, 100);
+    
+    return counter;
+}
+
+// ========== SISTEMA DE COMBOS ==========
+
+// Incrementar combo (solo en countdown)
+function incrementCombo() {
+    if (!comboEnabled) return;
+    
+    const now = Date.now();
+    
+    // Si han pasado más de 1 segundo, resetear combo
+    if (now - lastComboTime > COMBO_TIMEOUT) {
+        if (comboCount > 1) {
+            // Mostrar combo terminado
+            showComboBreak(comboCount);
+        }
+        comboCount = 0;
+    }
+    
+    comboCount++;
+    lastComboTime = now;
+    
+    // Actualizar o crear display de combo
+    updateComboDisplay();
+    
+    // Limpiar timer previo
+    if (comboTimer) {
+        clearTimeout(comboTimer);
+    }
+    
+    // Configurar nuevo timer para resetear combo
+    comboTimer = setTimeout(() => {
+        if (comboCount > 1) {
+            showComboBreak(comboCount);
+        }
+        comboCount = 0;
+        removeComboDisplay();
+    }, COMBO_TIMEOUT);
+}
+
+// Obtener multiplicador actual basado en combo
+function getComboMultiplier() {
+    // Buscar el multiplicador más alto que aplique
+    let multiplier = 1;
+    for (const [threshold, mult] of Object.entries(COMBO_MULTIPLIERS)) {
+        if (comboCount >= parseInt(threshold)) {
+            multiplier = mult;
+        }
+    }
+    return multiplier;
+}
+
+// Actualizar display de combo
+function updateComboDisplay() {
+    let comboDisplay = document.getElementById('combo-display');
+    
+    if (!comboDisplay) {
+        comboDisplay = document.createElement('div');
+        comboDisplay.id = 'combo-display';
+        comboDisplay.style.cssText = `
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.95), rgba(255, 23, 68, 0.95));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: 800;
+            z-index: 10003;
+            box-shadow: 0 8px 30px rgba(255, 23, 68, 0.6);
+            border: 3px solid white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            pointer-events: none;
+        `;
+        document.body.appendChild(comboDisplay);
+    }
+    
+    const multiplier = getComboMultiplier();
+    const multiplierText = multiplier > 1 ? ` x${multiplier}` : '';
+    
+    comboDisplay.innerHTML = `🔥 ${comboCount} COMBO${multiplierText}`;
+    
+    // Animación de entrada
+    comboDisplay.style.transform = 'translateX(-50%) scale(1.2)';
+    setTimeout(() => {
+        comboDisplay.style.transform = 'translateX(-50%) scale(1)';
+    }, 100);
+    
+    // Cambiar color según combo
+    if (comboCount >= 20) {
+        comboDisplay.style.background = 'linear-gradient(135deg, #ff1744, #c2185b)';
+        comboDisplay.style.fontSize = '36px';
+    } else if (comboCount >= 10) {
+        comboDisplay.style.background = 'linear-gradient(135deg, #ff6b9d, #ff1744)';
+        comboDisplay.style.fontSize = '32px';
+    } else if (comboCount >= 5) {
+        comboDisplay.style.fontSize = '30px';
+    }
+}
+
+// Mostrar multiplicador de combo
+function showComboMultiplier(multiplier, points) {
+    const mult = document.createElement('div');
+    mult.style.cssText = `
+        position: fixed;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, 20px);
+        color: #ff6b9d;
+        font-size: 20px;
+        font-weight: 800;
+        z-index: 10002;
+        pointer-events: none;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        opacity: 0;
+        animation: comboPointsFloat 1s ease-out forwards;
+    `;
+    mult.textContent = `+${points} pts`;
+    document.body.appendChild(mult);
+    
+    setTimeout(() => mult.remove(), 1000);
+}
+
+// Mostrar cuando se rompe el combo
+function showComboBreak(finalCombo) {
+    const breakMsg = document.createElement('div');
+    breakMsg.style.cssText = `
+        position: fixed;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(194, 24, 91, 0.9);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 700;
+        z-index: 10003;
+        box-shadow: 0 5px 20px rgba(194, 24, 91, 0.5);
+        pointer-events: none;
+        animation: comboBreakAnim 1.5s ease-out forwards;
+    `;
+    breakMsg.textContent = `Combo Terminado: ${finalCombo}`;
+    document.body.appendChild(breakMsg);
+    
+    setTimeout(() => breakMsg.remove(), 1500);
+}
+
+// Remover display de combo
+function removeComboDisplay() {
+    const comboDisplay = document.getElementById('combo-display');
+    if (comboDisplay) {
+        comboDisplay.style.transform = 'translateX(-50%) scale(0)';
+        setTimeout(() => comboDisplay.remove(), 200);
+    }
+}
+
+// Actualizar score con sistema de combos
+function updateScore(points = 1) {
+    // Calcular multiplicador de combo
+    const multiplier = getComboMultiplier();
+    const finalPoints = Math.floor(points * multiplier);
+    
+    interactionScore += finalPoints;
+    const scoreElement = document.getElementById('score');
+    if (scoreElement) {
+        scoreElement.textContent = interactionScore;
+        
+        // Animación de actualización
+        scoreElement.style.transform = 'scale(1.3)';
+        scoreElement.style.color = '#ff6b9d';
+        setTimeout(() => {
+            scoreElement.style.transform = 'scale(1)';
+            scoreElement.style.color = 'white';
+        }, 200);
+    }
+    
+    // Mostrar combo si hay multiplicador
+    if (multiplier > 1) {
+        showComboMultiplier(multiplier, finalPoints);
+    }
+    
+    // Logros especiales
+    if (interactionScore === 50) {
+        showAchievement('🎉 ¡50 Interacciones!');
+    } else if (interactionScore === 100) {
+        showAchievement('🌟 ¡100 Interacciones! ¡Increíble!');
+    } else if (interactionScore === 200) {
+        showAchievement('💝 ¡200 Interacciones! ¡Eres Genial!');
+    }
+}
+
+// Mostrar logro
+function showAchievement(text) {
+    const achievement = document.createElement('div');
+    achievement.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: linear-gradient(135deg, #ff6b9d, #ff1744);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 20px;
+        font-size: 24px;
+        font-weight: 700;
+        z-index: 10002;
+        box-shadow: 0 10px 40px rgba(255, 23, 68, 0.5);
+        animation: achievementPop 2s ease-out forwards;
+    `;
+    achievement.textContent = text;
+    document.body.appendChild(achievement);
+    
+    setTimeout(() => achievement.remove(), 2000);
+}
+
+// Actualizar posición del cursor/dedo con throttle
+const handleMouseMove = throttle((e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Crear partículas de rastro del cursor
+    if (cursorTrailEnabled && !isScrolling && Math.random() > 0.8) {
+        createCursorParticle(mouseX, mouseY);
+    }
+}, 16); // ~60fps
+
+document.addEventListener('mousemove', handleMouseMove);
+
+const handleTouchMove = throttle((e) => {
+    if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+        
+        if (cursorTrailEnabled && !isScrolling && Math.random() > 0.8) {
+            createCursorParticle(mouseX, mouseY);
+        }
+    }
+}, 16);
+
+document.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+// Detectar clicks y touches
+document.addEventListener('mousedown', () => { isMouseDown = true; });
+document.addEventListener('mouseup', () => { isMouseDown = false; });
+document.addEventListener('touchstart', () => { isMouseDown = true; }, { passive: true });
+document.addEventListener('touchend', () => { isMouseDown = false; }, { passive: true });
+
+// Sistema de "pintura" con el cursor - crear estelas cuando se arrastra
+let paintingInterval;
+
+document.addEventListener('mousedown', (e) => {
+    isMouseDown = true;
+    startPainting(e.clientX, e.clientY);
+});
+
+document.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+        isMouseDown = true;
+        startPainting(e.touches[0].clientX, e.touches[0].clientY);
+    }
+}, { passive: true });
+
+document.addEventListener('mouseup', stopPainting);
+document.addEventListener('touchend', stopPainting);
+
+function startPainting(x, y) {
+    // Crear partículas más frecuentes cuando se mantiene presionado
+    const interval = isMobile ? 80 : 50;
+    paintingInterval = setInterval(() => {
+        if (isMouseDown && !isScrolling) {
+            createCursorParticle(mouseX, mouseY);
+            
+            // Efecto de estela mágica (reducido para evitar lag)
+            if (!isMobile && Math.random() > 0.5) {
+                const offset = 20;
+                createCursorParticle(
+                    mouseX + (Math.random() - 0.5) * offset,
+                    mouseY + (Math.random() - 0.5) * offset
+                );
+            }
+        }
+    }, interval);
+}
+
+function stopPainting() {
+    isMouseDown = false;
+    if (paintingInterval) {
+        clearInterval(paintingInterval);
+    }
+}
+
+// Crear partículas de rastro del cursor
+function createCursorParticle(x, y) {
+    if (currentParticles >= maxParticles || isScrolling) return;
+    
+    currentParticles++;
+    const particle = document.createElement('div');
+    particle.className = 'cursor-particle';
+    
+    const colors = ['#ff6b9d', '#ff1744', '#c2185b', '#ffffff'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size = Math.random() * 4 + 2;
+    
+    particle.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.8;
+        animation: cursorParticleFade 0.8s ease-out forwards;
+    `;
+    
+    document.body.appendChild(particle);
+    setTimeout(() => {
+        particle.remove();
+        currentParticles--;
+    }, 800);
+    
+    // Pequeño punto por rastro
+    if (Math.random() > 0.95) {
+        updateScore(1);
+    }
+}
+
+// Efecto ripple (ondas) al hacer clic
+function createRipple(x, y, container = document.body) {
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple-effect';
+    
+    const isLoveLetterActive = document.querySelector('.love-letter-container') !== null;
+    const color = isLoveLetterActive 
+        ? 'rgba(255, 107, 157, 0.4)' 
+        : 'rgba(255, 255, 255, 0.3)';
+    
+    ripple.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: ${color};
+        border: 2px solid ${isLoveLetterActive ? 'rgba(255, 107, 157, 0.6)' : 'rgba(255, 255, 255, 0.5)'};
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        animation: rippleExpand 0.8s ease-out forwards;
+    `;
+    
+    container.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 800);
+    updateScore(1);
+}
+
+// Crear corazones interactivos al hacer clic (OPTIMIZADO)
+function createInteractiveHeart(x, y) {
+    if (currentParticles >= maxParticles || isScrolling) return;
+    
+    currentParticles++;
+    
+    // Incrementar combo
+    incrementCombo();
+    
+    const heart = document.createElement('div');
+    const heartEmojis = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓'];
+    const emoji = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    
+    heart.innerHTML = emoji;
+    heart.className = 'interactive-heart';
+    
+    // Animación simplificada para mejor rendimiento
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 80 + 40;
+    const size = Math.random() * 15 + 18;
+    
+    heart.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        font-size: ${size}px;
+        pointer-events: none;
+        z-index: 9999;
+        will-change: transform, opacity;
+        --tx: ${Math.cos(angle) * distance}px;
+        --ty: ${Math.sin(angle) * distance}px;
+    `;
+    
+    document.body.appendChild(heart);
+    setTimeout(() => {
+        heart.remove();
+        currentParticles--;
+    }, 1000); // Reducido de 1500 a 1000ms
+    updateScore(2);
+}
+
+// Crear explosión de confetti
+function createConfetti(x, y) {
+    if (isScrolling) return;
+    
+    const colors = ['#ff6b9d', '#ff1744', '#c2185b', '#ff9999', '#ffb3d9', '#fff'];
+    const particleCount = isMobile ? 12 : 20; // Reducido para mejor rendimiento
+    
+    for (let i = 0; i < particleCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = Math.random() * 150 + 100;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const rotation = Math.random() * 360;
+        
+        confetti.style.cssText = `
+            position: fixed;
+            left: ${x}px;
+            top: ${y}px;
+            width: ${Math.random() * 8 + 4}px;
+            height: ${Math.random() * 8 + 4}px;
+            background: ${color};
+            pointer-events: none;
+            z-index: 9996;
+            animation: confettiFly 1.2s ease-out forwards;
+            --angle-x: ${Math.cos(angle) * velocity}px;
+            --angle-y: ${Math.sin(angle) * velocity}px;
+            --rotation: ${rotation}deg;
+        `;
+        
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 1200);
+    }
+    updateScore(3);
+}
+
+// Evento de clic en cualquier parte
+let lastClickTime = 0;
+let lastClickX = 0;
+let lastClickY = 0;
+
+document.addEventListener('click', (e) => {
+    const now = Date.now();
+    const timeDiff = now - lastClickTime;
+    const distance = Math.sqrt(
+        Math.pow(e.clientX - lastClickX, 2) + 
+        Math.pow(e.clientY - lastClickY, 2)
+    );
+    
+    // Detectar doble clic (dentro de 400ms y cerca del mismo punto)
+    if (timeDiff < 400 && distance < 50) {
+        // ¡MEGA EXPLOSIÓN!
+        createMegaExplosion(e.clientX, e.clientY);
+        lastClickTime = 0; // Reset para evitar triple click
+    } else {
+        // Clic normal
+        createRipple(e.clientX, e.clientY);
+        
+        // 50% chance de crear corazón o confetti
+        if (Math.random() > 0.5) {
+            createInteractiveHeart(e.clientX, e.clientY);
+        } else {
+            createConfetti(e.clientX, e.clientY);
+        }
+        
+        lastClickTime = now;
+        lastClickX = e.clientX;
+        lastClickY = e.clientY;
+    }
+});
+
+// Función para mega explosión
+function createMegaExplosion(x, y) {
+    // ¡Puntos extra por doble clic!
+    updateScore(10);
+    
+    // Crear múltiples capas de efectos
+    
+    // Capa 1: Ripple grande
+    const bigRipple = document.createElement('div');
+    bigRipple.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 107, 157, 0.6), transparent);
+        border: 3px solid rgba(255, 107, 157, 0.9);
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        animation: megaRipple 1.5s ease-out forwards;
+    `;
+    document.body.appendChild(bigRipple);
+    setTimeout(() => bigRipple.remove(), 1500);
+    
+    // Capa 2: Flash de luz
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at ${x}px ${y}px, 
+            rgba(255, 255, 255, 0.5), transparent 40%);
+        pointer-events: none;
+        z-index: 9998;
+        animation: flashFade 0.5s ease-out forwards;
+    `;
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 500);
+    
+    // Capa 3: Explosión masiva de corazones
+    for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+            const angle = (Math.PI * 2 * i) / 40;
+            const distance = 150 + Math.random() * 100;
+            const targetX = x + Math.cos(angle) * distance;
+            const targetY = y + Math.sin(angle) * distance;
+            createInteractiveHeart(targetX, targetY);
+        }, i * 30);
+    }
+    
+    // Capa 4: Confetti masivo
+    setTimeout(() => {
+        for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+                createConfetti(x, y);
+            }, i * 150);
+        }
+    }, 200);
+    
+    // Mostrar mensaje especial
+    const message = document.createElement('div');
+    message.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y - 100}px;
+        transform: translate(-50%, -50%) scale(0);
+        color: #ff6b9d;
+        font-size: 32px;
+        font-weight: 700;
+        pointer-events: none;
+        z-index: 10000;
+        text-shadow: 0 0 20px rgba(255, 23, 68, 0.8);
+        animation: messagePop 1.5s ease-out forwards;
+    `;
+    message.textContent = '💥 ¡MEGA EXPLOSIÓN! +10';
+    document.body.appendChild(message);
+    setTimeout(() => message.remove(), 1500);
+}
+
+document.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        createRipple(touch.clientX, touch.clientY);
+        
+        if (Math.random() > 0.5) {
+            createInteractiveHeart(touch.clientX, touch.clientY);
+        } else {
+            createConfetti(touch.clientX, touch.clientY);
+        }
+    }
+}, { passive: true });
+
+// Efecto especial en las cajas de tiempo
+function initTimeBoxInteractions() {
+    const timeBoxes = document.querySelectorAll('.time-box');
+    
+    timeBoxes.forEach(box => {
+        box.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Explosión de partículas especial
+            const rect = box.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Crear múltiples corazones
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createInteractiveHeart(centerX, centerY);
+                }, i * 100);
+            }
+            
+            // Efecto de brillo (reducido para mejor performance)
+            box.style.filter = 'brightness(1.3)';
+            setTimeout(() => {
+                box.style.filter = '';
+            }, 300);
+        });
+    });
+}
+
+// Inicializar interacciones cuando carga la página
+setTimeout(() => {
+    initTimeBoxInteractions();
+    initLogoInteraction();
+    createInteractionCounter();
+}, 1000);
+
+// Interacción especial con el logo
+function initLogoInteraction() {
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        let clickCount = 0;
+        
+        logo.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clickCount++;
+            
+            const rect = logo.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Explosión especial cada 3 clics
+            if (clickCount % 3 === 0) {
+                // Mega explosión
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        createInteractiveHeart(
+                            centerX + (Math.random() - 0.5) * 100,
+                            centerY + (Math.random() - 0.5) * 100
+                        );
+                    }, i * 50);
+                }
+                
+                // Confetti adicional
+                setTimeout(() => {
+                    createConfetti(centerX, centerY);
+                }, 200);
+            } else {
+                // Explosión normal
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        createInteractiveHeart(centerX, centerY);
+                    }, i * 80);
+                }
+            }
+            
+            // Efecto de brillo
+            logo.style.filter = 'brightness(1.8) drop-shadow(0 0 100px rgba(255, 255, 255, 1))';
+            logo.style.transform = 'scale(1.1) rotate(5deg)';
+            
+            setTimeout(() => {
+                logo.style.filter = '';
+                logo.style.transform = '';
+            }, 400);
+        });
+    }
+}
+
+// Reinicializar interacciones cuando aparece la carta
+const originalShowLoveLetter = showLoveLetter;
+
+// Sistema de partículas mágicas que flotan constantemente
+function createMagicParticles() {
+    setInterval(() => {
+        if (!isLowPerformance && Math.random() > 0.7) {
+            const x = Math.random() * window.innerWidth;
+            const y = window.innerHeight + 20;
+            
+            const particle = document.createElement('div');
+            particle.className = 'magic-particle';
+            
+            const size = Math.random() * 3 + 1;
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 1;
+            
+            particle.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9995;
+                animation: magicFloat ${duration}s ease-in ${delay}s forwards;
+                box-shadow: 0 0 ${size * 2}px rgba(255, 255, 255, 0.8);
+            `;
+            
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), (duration + delay) * 1000);
+        }
+    }, 300);
+}
+
+// Iniciar partículas mágicas
+if (!isLowPerformance) {
+    createMagicParticles();
+}
+
+// Efecto de texto interactivo en la carta (cuando aparece)
+function initLetterTextInteraction() {
+    const letterTexts = document.querySelectorAll('.letter-text');
+    const letterCard = document.querySelector('.letter-card');
+    
+    // Efectos hover deshabilitados para evitar lag
+    // Solo mantener interacción de click simple
+    
+    letterTexts.forEach(text => {
+        text.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Crear corazones alrededor del párrafo
+            const rect = this.getBoundingClientRect();
+            for (let i = 0; i < 3; i++) {
+                const x = rect.left + Math.random() * rect.width;
+                const y = rect.top + Math.random() * rect.height;
+                setTimeout(() => {
+                    createInteractiveHeart(x, y);
+                }, i * 100);
+            }
+        });
+    });
+}
+
+// Observer para detectar cuando aparece la carta
+const observer = new MutationObserver(() => {
+    if (document.querySelector('.love-letter-container')) {
+        setTimeout(() => {
+            initLetterTextInteraction();
+        }, 500);
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+// Detector de scroll global para pausar efectos y mejorar rendimiento
+let scrollDetector;
+document.addEventListener('scroll', () => {
+    isScrolling = true;
+    clearTimeout(scrollDetector);
+    scrollDetector = setTimeout(() => {
+        isScrolling = false;
+    }, 150);
+}, { passive: true, capture: true });
+
+// Limpiar partículas en exceso periódicamente  
+setInterval(() => {
+    const particles = document.querySelectorAll('.cursor-particle, .interactive-heart, .confetti-piece');
+    if (particles.length > maxParticles * 2) {
+        // Remover las más antiguas
+        for (let i = 0; i < particles.length - maxParticles; i++) {
+            particles[i].remove();
+            currentParticles = Math.max(0, currentParticles - 1);
+        }
+    }
+}, 2000);
