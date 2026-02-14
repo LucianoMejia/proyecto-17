@@ -838,14 +838,31 @@ document.addEventListener('touchend', () => { isMouseDown = false; }, { passive:
 let paintingInterval;
 
 document.addEventListener('mousedown', (e) => {
+    // Ignorar elementos específicos para evitar lag
+    if (e.target.closest('.love-letter-container') || 
+        e.target.closest('.letter-text') ||
+        e.target.closest('.time-box') ||
+        e.target.closest('.logo')) {
+        return;
+    }
     isMouseDown = true;
     startPainting(e.clientX, e.clientY);
 });
 
 document.addEventListener('touchstart', (e) => {
     if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        // Ignorar elementos específicos para evitar lag
+        if (target && (target.closest('.love-letter-container') || 
+            target.closest('.letter-text') ||
+            target.closest('.time-box') ||
+            target.closest('.logo'))) {
+            return;
+        }
         isMouseDown = true;
-        startPainting(e.touches[0].clientX, e.touches[0].clientY);
+        startPainting(touch.clientX, touch.clientY);
     }
 }, { passive: true });
 
@@ -941,13 +958,15 @@ function createRipple(x, y, container = document.body) {
 }
 
 // Crear corazones interactivos al hacer clic (OPTIMIZADO)
-function createInteractiveHeart(x, y, addScore = false) {
+function createInteractiveHeart(x, y, addScore = false, shouldIncrementCombo = true) {
     if (currentParticles >= maxParticles || isScrolling) return;
     
     currentParticles++;
     
-    // Incrementar combo
-    incrementCombo();
+    // Incrementar combo solo si corresponde
+    if (shouldIncrementCombo) {
+        incrementCombo();
+    }
     
     const heart = document.createElement('div');
     const heartEmojis = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓'];
@@ -978,10 +997,6 @@ function createInteractiveHeart(x, y, addScore = false) {
         heart.remove();
         currentParticles--;
     }, 1000); // Reducido de 1500 a 1000ms
-    
-    if (addScore) {
-        updateScore(2);
-    }
 }
 
 // Crear explosión de confetti
@@ -1025,7 +1040,16 @@ let lastClickTime = 0;
 let lastClickX = 0;
 let lastClickY = 0;
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {    
+    // Ignorar clics dentro de elementos específicos
+    const isInsideSpecialElement = e.target.closest('.love-letter-container') || 
+                                     e.target.closest('.time-box') ||
+                                     e.target.closest('.logo');
+    
+    if (isInsideSpecialElement) {
+        return;
+    }
+    
     const now = Date.now();
     const timeDiff = now - lastClickTime;
     const distance = Math.sqrt(
@@ -1042,14 +1066,16 @@ document.addEventListener('click', (e) => {
         // Clic normal
         createRipple(e.clientX, e.clientY);
         
-        // 50% chance de crear corazón o confetti (con puntos)
+        // Incrementar combo solo una vez
+        incrementCombo();
+        
+        // 50% chance de crear corazón o confetti (sin incrementar combo adicional)
         if (Math.random() > 0.5) {
-            createInteractiveHeart(e.clientX, e.clientY, true);
-            updateScore(1);
+            createInteractiveHeart(e.clientX, e.clientY, false, false);
         } else {
             createConfetti(e.clientX, e.clientY);
-            updateScore(1);
         }
+        updateScore(1);
         
         lastClickTime = now;
         lastClickX = e.clientX;
@@ -1059,6 +1085,9 @@ document.addEventListener('click', (e) => {
 
 // Función para mega explosión
 function createMegaExplosion(x, y) {
+    // Incrementar combo solo una vez
+    incrementCombo();
+    
     // ¡Puntos extra por doble clic!
     updateScore(10);
     
@@ -1097,14 +1126,14 @@ function createMegaExplosion(x, y) {
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 500);
     
-    // Capa 3: Explosión masiva de corazones
+    // Capa 3: Explosión masiva de corazones (sin incrementar combo adicional)
     for (let i = 0; i < 40; i++) {
         setTimeout(() => {
             const angle = (Math.PI * 2 * i) / 40;
             const distance = 150 + Math.random() * 100;
             const targetX = x + Math.cos(angle) * distance;
             const targetY = y + Math.sin(angle) * distance;
-            createInteractiveHeart(targetX, targetY, false);
+            createInteractiveHeart(targetX, targetY, false, false);
         }, i * 30);
     }
     
@@ -1140,15 +1169,28 @@ function createMegaExplosion(x, y) {
 document.addEventListener('touchstart', (e) => {
     if (e.touches.length > 0) {
         const touch = e.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        // Ignorar toques dentro de elementos específicos para evitar contar doble
+        if (target && (target.closest('.love-letter-container') || 
+            target.closest('.letter-text') ||
+            target.closest('.time-box') ||
+            target.closest('.logo'))) {
+            return;
+        }
+        
         createRipple(touch.clientX, touch.clientY);
         
+        // Incrementar combo solo una vez
+        incrementCombo();
+        
+        // 50% chance de crear corazón o confetti (sin incrementar combo adicional)
         if (Math.random() > 0.5) {
-            createInteractiveHeart(touch.clientX, touch.clientY, true);
-            updateScore(1);
+            createInteractiveHeart(touch.clientX, touch.clientY, false, false);
         } else {
             createConfetti(touch.clientX, touch.clientY);
-            updateScore(1);
         }
+        updateScore(1);
     }
 }, { passive: true });
 
@@ -1160,15 +1202,18 @@ function initTimeBoxInteractions() {
         box.addEventListener('click', (e) => {
             e.stopPropagation();
             
+            // Incrementar combo solo una vez
+            incrementCombo();
+            
             // Explosión de partículas especial
             const rect = box.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            // Crear múltiples corazones y dar puntos
+            // Crear múltiples corazones sin incrementar combo adicional
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
-                    createInteractiveHeart(centerX, centerY, false);
+                    createInteractiveHeart(centerX, centerY, false, false);
                 }, i * 100);
             }
             updateScore(5);
@@ -1199,18 +1244,22 @@ function initLogoInteraction() {
             e.stopPropagation();
             clickCount++;
             
+            // Incrementar combo solo una vez
+            incrementCombo();
+            
             const rect = logo.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
             // Explosión especial cada 3 clics
             if (clickCount % 3 === 0) {
-                // Mega explosión
+                // Mega explosión - crear corazones sin incrementar combo adicional
                 for (let i = 0; i < 30; i++) {
                     setTimeout(() => {
                         createInteractiveHeart(
                             centerX + (Math.random() - 0.5) * 100,
                             centerY + (Math.random() - 0.5) * 100,
+                            false,
                             false
                         );
                     }, i * 50);
@@ -1223,10 +1272,10 @@ function initLogoInteraction() {
                 
                 updateScore(15);
             } else {
-                // Explosión normal
+                // Explosión normal - crear corazones sin incrementar combo adicional
                 for (let i = 0; i < 8; i++) {
                     setTimeout(() => {
-                        createInteractiveHeart(centerX, centerY, false);
+                        createInteractiveHeart(centerX, centerY, false, false);
                     }, i * 80);
                 }
                 updateScore(8);
@@ -1295,38 +1344,62 @@ if (!isLowPerformance && !isMobile) {
 }
 
 // Efecto de texto interactivo en la carta (cuando aparece)
+let letterTextInitialized = false;
+
 function initLetterTextInteraction() {
+    // Evitar inicializar múltiples veces
+    if (letterTextInitialized) return;
+    
     const letterTexts = document.querySelectorAll('.letter-text');
+    if (letterTexts.length === 0) return;
+    
+    letterTextInitialized = true;
     const letterCard = document.querySelector('.letter-card');
     
     // Efectos hover deshabilitados para evitar lag
     // Solo mantener interacción de click simple
     
-    letterTexts.forEach(text => {
-        text.addEventListener('click', function(e) {
-            e.stopPropagation();
+    letterTexts.forEach((text, index) => {
+        let lastClickTime = 0;
+        
+        // Usar {once: false, capture: false} para evitar múltiples listeners
+        const handleClick = function(e) {
+            e.stopImmediatePropagation(); // Detener TODAS las propagaciones
+            e.preventDefault();
             
-            // Crear corazones alrededor del párrafo
-            const rect = this.getBoundingClientRect();
-            for (let i = 0; i < 3; i++) {
-                const x = rect.left + Math.random() * rect.width;
-                const y = rect.top + Math.random() * rect.height;
-                setTimeout(() => {
-                    createInteractiveHeart(x, y, false);
-                }, i * 100);
+            // Prevenir múltiples clics rápidos (debounce)
+            const now = Date.now();
+            if (now - lastClickTime < 500) { // Aumentado a 500ms
+                return;
             }
+            lastClickTime = now;
+            
+            // Incrementar combo una sola vez por click en texto
+            incrementCombo();
+            
+            // Crear solo 1 corazón en vez de 3 para evitar lag
+            const rect = this.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            createInteractiveHeart(x, y, false, false);
             
             // Sumar puntos una sola vez por click
             updateScore(3);
-        });
+        };
+        
+        // Remover listener anterior si existe (por si acaso)
+        text.removeEventListener('click', handleClick);
+        text.addEventListener('click', handleClick, { once: false, capture: false });
     });
 }
 
 // Observer para detectar cuando aparece la carta
 const observer = new MutationObserver(() => {
-    if (document.querySelector('.love-letter-container')) {
+    if (document.querySelector('.love-letter-container') && !letterTextInitialized) {
         setTimeout(() => {
             initLetterTextInteraction();
+            // Desconectar observer después de inicializar
+            observer.disconnect();
         }, 500);
     }
 });
