@@ -1,6 +1,9 @@
 // Fecha objetivo: 14 de febrero de 2026
 const targetDate = new Date('February 14, 2026 00:00:00').getTime();
 
+// Detectar si es dispositivo móvil
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
 // Elementos del DOM
 const daysElement = document.getElementById('days');
 const hoursElement = document.getElementById('hours');
@@ -203,13 +206,14 @@ function createHeartExplosion() {
     document.body.appendChild(explosionContainer);
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞', '💓', '💘'];
-    const particleCount = 50;
+    // Ajustar cantidad según dispositivo
+    const particleCount = isMobile ? 30 : 50;
     
     for (let i = 0; i < particleCount; i++) {
         const heart = document.createElement('div');
         const angle = (Math.PI * 2 * i) / particleCount;
-        const velocity = 200 + Math.random() * 400;
-        const size = 20 + Math.random() * 40;
+        const velocity = isMobile ? (150 + Math.random() * 250) : (200 + Math.random() * 400);
+        const size = isMobile ? (15 + Math.random() * 25) : (20 + Math.random() * 40);
         
         heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
         heart.style.cssText = `
@@ -238,6 +242,7 @@ function createFloatingHearts() {
     document.body.appendChild(heartsContainer);
     
     const heartTypes = ['❤️', '💕', '💖', '💗', '💝', '💞'];
+    const heartInterval = isMobile ? 600 : 400; // Menos frecuente en móvil
     
     setInterval(() => {
         const heart = document.createElement('div');
@@ -245,31 +250,35 @@ function createFloatingHearts() {
         heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
         heart.style.left = Math.random() * 100 + 'vw';
         heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
-        heart.style.fontSize = (Math.random() * 30 + 25) + 'px';
+        heart.style.fontSize = isMobile ? (Math.random() * 20 + 20) + 'px' : (Math.random() * 30 + 25) + 'px';
         heart.style.setProperty('--random-x', (Math.random() * 200 - 100) + 'px');
+        heart.style.willChange = 'transform, opacity';
         heartsContainer.appendChild(heart);
         
         setTimeout(() => {
             heart.remove();
         }, 8000);
-    }, 400);
+    }, heartInterval);
     
-    // Partículas adicionales de corazones pequeños
-    setInterval(() => {
-        const smallHeart = document.createElement('div');
-        smallHeart.className = 'floating-heart';
-        smallHeart.innerHTML = '💕';
-        smallHeart.style.left = Math.random() * 100 + 'vw';
-        smallHeart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        smallHeart.style.fontSize = (Math.random() * 15 + 10) + 'px';
-        smallHeart.style.setProperty('--random-x', (Math.random() * 150 - 75) + 'px');
-        smallHeart.style.opacity = '0.6';
-        heartsContainer.appendChild(smallHeart);
-        
-        setTimeout(() => {
-            smallHeart.remove();
-        }, 5000);
-    }, 800);
+    // Partículas adicionales de corazones pequeños (menos en móvil)
+    if (!isMobile) {
+        setInterval(() => {
+            const smallHeart = document.createElement('div');
+            smallHeart.className = 'floating-heart';
+            smallHeart.innerHTML = '💕';
+            smallHeart.style.left = Math.random() * 100 + 'vw';
+            smallHeart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            smallHeart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            smallHeart.style.setProperty('--random-x', (Math.random() * 150 - 75) + 'px');
+            smallHeart.style.opacity = '0.6';
+            smallHeart.style.willChange = 'transform, opacity';
+            heartsContainer.appendChild(smallHeart);
+            
+            setTimeout(() => {
+                smallHeart.remove();
+            }, 5000);
+        }, 800);
+    }
     
     // Crear partículas brillantes
     createSparkles();
@@ -277,18 +286,21 @@ function createFloatingHearts() {
 
 // Función para crear partículas brillantes
 function createSparkles() {
+    const sparkleInterval = isMobile ? 400 : 200; // Menos frecuente en móvil
+    
     setInterval(() => {
         const sparkle = document.createElement('div');
         sparkle.className = 'sparkle';
         sparkle.style.left = Math.random() * 100 + 'vw';
         sparkle.style.bottom = '0px';
         sparkle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        sparkle.style.willChange = 'transform, opacity';
         document.body.appendChild(sparkle);
         
         setTimeout(() => {
             sparkle.remove();
         }, 4000);
-    }, 200);
+    }, sparkleInterval);
 }
 
 // Actualizar cada segundo
